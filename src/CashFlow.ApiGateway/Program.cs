@@ -1,5 +1,6 @@
 using CashFlow.ApiGateway;
 using CashFlow.ApiGateway.Models;
+using CashFlow.Infraestructure.Handlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +11,9 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<TokenPropagationHandler>();
 
 builder.Services.Configure<ServiceUrlsOptions>(builder.Configuration.GetSection("ServiceUrls"));
 
@@ -47,12 +51,15 @@ builder.Services.AddHttpClient("Transactions", (sp, client) =>
 {
     var options = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
     client.BaseAddress = new Uri(options.Transactions);
-});
+})
+ .AddHttpMessageHandler<TokenPropagationHandler>();
+
 builder.Services.AddHttpClient("Consolidating", (sp,client) =>
 {
     var options = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
     client.BaseAddress = new Uri(options.Consolidation);
-});
+})
+ .AddHttpMessageHandler<TokenPropagationHandler>();
 
 builder.Services.AddOpenApi();
 
@@ -167,6 +174,7 @@ app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransacti
 .ProducesProblem(StatusCodes.Status500InternalServerError)
 .WithOpenApi()
 .RequireAuthorization();
+
 
 app.MapGet("/gateway/consolidating", async (DateTime date, IHttpClientFactory clientFactory) =>
 {
