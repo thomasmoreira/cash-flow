@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CashFlow.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250303163127_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250303203828_DateTimeTZ")]
+    partial class DateTimeTZ
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,20 @@ namespace CashFlow.Infraestructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("CashFlow.Domain.Entities.DailyConsolidation", b =>
+                {
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("DATE");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.HasKey("Date");
+
+                    b.ToTable("dailyconsolidation", (string)null);
+                });
 
             modelBuilder.Entity("CashFlow.Domain.Entities.Transaction", b =>
                 {
@@ -36,19 +50,19 @@ namespace CashFlow.Infraestructure.Migrations
                         .HasColumnType("numeric(10,2)");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("VARCHAR");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Transactions", (string)null);
+                    b.ToTable("transaction", (string)null);
                 });
 #pragma warning restore 612, 618
         }

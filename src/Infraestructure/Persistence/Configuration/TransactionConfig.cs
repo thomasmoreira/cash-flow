@@ -9,7 +9,7 @@ public class TransactionConfig : IEntityTypeConfiguration<Transaction>
     public void Configure(EntityTypeBuilder<Transaction> builder)
     {
 
-        builder.ToTable("Transactions");
+        builder.ToTable("transaction");
 
         builder
             .HasKey(t => t.Id);
@@ -23,7 +23,7 @@ public class TransactionConfig : IEntityTypeConfiguration<Transaction>
             .HasMaxLength(100);
 
         builder.Property(t => t.Date)
-            .HasColumnType("DATETIME")
+            .HasColumnType("timestamptz")
             .IsRequired();
     }
 }

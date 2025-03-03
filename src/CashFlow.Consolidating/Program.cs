@@ -1,8 +1,12 @@
+using CashFlow.Application;
 using CashFlow.Consolidating.Messaging;
 using CashFlow.Consolidating.Services;
 using CashFlow.Domain.Services;
+using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
+using CashFlow.Infraestructure.Persistence;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 StaticLogger.EnsureInitialized();
@@ -15,6 +19,10 @@ try
 
     builder.Services.AddOpenApi();
 
+    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(connectionString));
+
     builder.Services.AddMassTransit(x =>
     {
         x.AddConsumer<TransactionConsumer>();
@@ -26,8 +34,9 @@ try
         });
     });
 
-
-    builder.Services.AddSingleton<IConsolidatingService, ConsolidatingService>();
+    builder.Services.AddApplication();
+    builder.Services.AddInfraestructure();
+    builder.Services.AddScoped<IConsolidatingService, ConsolidatingService>();
 
     var app = builder.Build();
 

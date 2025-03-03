@@ -29,21 +29,21 @@ public class ConsolidatingService : IConsolidatingService
 
             var amountToConsolidate = transaction.Type == Domain.Enums.TransactionType.Expense ? transaction.Amount * -1 : transaction.Amount;
 
-            var dailyConsolidation = await _consolidatingRepository.GetDailyConsolidatingAsync(transaction.Date);
+            var dailyConsolidationData = await _consolidatingRepository.GetDailyConsolidatingAsync(transaction.Date);
 
-            var newAmount = dailyConsolidation is not null ? dailyConsolidation.Amount + amountToConsolidate : amountToConsolidate;
+            var newAmount = dailyConsolidationData is not null ? dailyConsolidationData.Amount + amountToConsolidate : amountToConsolidate;
+           
+            _logger.LogInformation("Daily consolidation for {Date} is {Amount}", transaction.Date, newAmount);  
 
-            dailyConsolidation = new DailyConsolidation(transaction.Date, newAmount);
-
-            _logger.LogInformation("Daily consolidation for {Date} is {Amount}", transaction.Date, dailyConsolidation.Amount);  
-
-            if (dailyConsolidation is not null)
+            if (dailyConsolidationData is not null)
             {
-                await _consolidatingRepository.UpdateAsync(dailyConsolidation);
+                dailyConsolidationData.Amount = newAmount;
+                await _consolidatingRepository.UpdateAsync(dailyConsolidationData);
                 _logger.LogInformation("Daily consolidation for {Date} updated", transaction.Date);
             }
             else
             {
+                var dailyConsolidation = new DailyConsolidation(transaction.Date, newAmount);
                 await _consolidatingRepository.AddAsync(dailyConsolidation);
                 _logger.LogInformation("Daily consolidation for {Date} added", transaction.Date);
             }

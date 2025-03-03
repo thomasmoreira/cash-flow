@@ -26,6 +26,7 @@ try
         options.UseNpgsql(connectionString));
 
     builder.Services.AddApplication();
+    builder.Services.AddInfraestructure();
 
     builder.Services.AddMassTransit(bus =>
     {
@@ -37,7 +38,7 @@ try
 
     builder.Services.AddMassTransitHostedService();
 
-    builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+    
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
