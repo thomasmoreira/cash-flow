@@ -1,11 +1,9 @@
 using CashFlow.Application;
 using CashFlow.Application.Behaviors;
 using CashFlow.Application.Commands;
-using CashFlow.Domain.Repositories;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Persistence;
-using CashFlow.Infraestructure.Persistence.Repositories;
 using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -57,13 +55,8 @@ try
     }
 
     app.MapPost("/transactions", async (CreateTransactionCommand command, IMediator mediator) =>
-    {
-        Log
-           .ForContext("Command", command)
-           .Information("Received CreateTransactionCommand");
-
+    {       
         return await mediator.Send(command);
-
     });
 
 

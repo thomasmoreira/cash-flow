@@ -1,5 +1,6 @@
 ﻿using CashFlow.Domain.Events;
 using CashFlow.Domain.Services;
+using CashFlow.Infraestructure.Extensions;
 using MassTransit;
 
 namespace CashFlow.Consolidating.Messaging;
@@ -19,13 +20,11 @@ public class TransactionConsumer : IConsumer<TransactionCreatedEvent>
     {
         var @event = context.Message;
 
+        _logger.LogInformation("Consuming TransactionCreatedEvent: {TransactionCreatedEvent}", @event.ToJson());
+        
         await _consolidatingService.Consolidate(@event.TransactionId);
 
-        _logger.LogInformation("Processing transaction {TransactionId}", @event.TransactionId);
-
-        Console.WriteLine($"Processando lançamento: {@event}");
-
-        _logger.LogInformation("Transaction {TransactionId} processed", @event.TransactionId);
+        _logger.LogInformation("TransactionConsolidatedEvent consumed");
 
         await Task.CompletedTask;
     }

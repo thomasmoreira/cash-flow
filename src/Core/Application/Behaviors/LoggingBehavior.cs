@@ -1,6 +1,6 @@
-﻿using MediatR;
+﻿using CashFlow.Infraestructure.Extensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 namespace CashFlow.Application.Behaviors;
 
@@ -11,21 +11,13 @@ public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TReque
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         var correlationId = Guid.NewGuid();
+        
+        logger.LogInformation("Handling request {CorrelationID}: {Request}", correlationId, request.ToJson());
 
-        // Request Logging
-        // Serialize the request
-        var requestJson = JsonSerializer.Serialize(request);
-        // Log the serialized request
-        logger.LogInformation("Handling request {CorrelationID}: {Request}", correlationId, requestJson);
+        var response = await next();        
 
-        // Response logging
-        var response = await next();
-        // Serialize the request
-        var responseJson = JsonSerializer.Serialize(response);
-        // Log the serialized request
-        logger.LogInformation("Response for {Correlation}: {Response}", correlationId, responseJson);
+        logger.LogInformation("Response for {Correlation}: {Response}", correlationId, response?.ToJson());
 
-        // Return response
         return response;
     }
 }
