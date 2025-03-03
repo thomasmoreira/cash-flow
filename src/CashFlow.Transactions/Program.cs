@@ -1,73 +1,33 @@
 using CashFlow.Application;
-using CashFlow.Application.Behaviors;
 using CashFlow.Application.Commands;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Persistence;
-using MassTransit;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System.Text;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Server Booting Up...");
 
 try
 {
-
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog();
 
-    var jwtIssuer = builder.Configuration["Jwt:Issuer"];
-    var jwtAudience = builder.Configuration["Jwt:Audience"];
-    var jwtKey = builder.Configuration["Jwt:Key"];
-
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-    };
-});
-
-    builder.Services.AddAuthorization();
+    builder.Services.AddJwtAuthentication(builder.Configuration);
 
     builder.Services.AddOpenApi();
 
-    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(connectionString));
+    builder.Services.AddDatabase(builder.Configuration);
+
 
     builder.Services.AddApplication();
     builder.Services.AddInfraestructure();
 
-    builder.Services.AddMassTransit(bus =>
-    {
-        bus.UsingRabbitMq((ctx, busConfigurator) =>
-        {
-            busConfigurator.ConfigureEndpoints(ctx);
-        });
-    });
+    builder.Services.AddMassTransitConfiguration();
 
-    builder.Services.AddMassTransitHostedService();
-
-    
-    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+    builder.Services.AddPipelineBehaviors();
 
     var app = builder.Build();
     app.UseExceptionHandlingMiddleware();

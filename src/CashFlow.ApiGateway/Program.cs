@@ -1,14 +1,17 @@
 using CashFlow.ApiGateway;
 using CashFlow.ApiGateway.Models;
+using CashFlow.Application;
+using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Handlers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
+
+StaticLogger.EnsureInitialized();
+Log.Information("Server Booting Up...");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,95 +20,19 @@ builder.Services.AddTransient<TokenPropagationHandler>();
 
 builder.Services.Configure<ServiceUrlsOptions>(builder.Configuration.GetSection("ServiceUrls"));
 
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
 var jwtKey = builder.Configuration["Jwt:Key"];
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-    };
-});
-builder.Services.AddAuthorization();
 
-
-// Configuração do Serilog para Seq
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Seq("http://localhost:5341")
-    .CreateLogger();
-
-builder.Services.AddHttpClient("Transactions", (sp, client) =>
-{
-    var options = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
-    client.BaseAddress = new Uri(options.Transactions);
-})
- .AddHttpMessageHandler<TokenPropagationHandler>();
-
-builder.Services.AddHttpClient("Consolidating", (sp,client) =>
-{
-    var options = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
-    client.BaseAddress = new Uri(options.Consolidation);
-})
- .AddHttpMessageHandler<TokenPropagationHandler>();
-
+builder.Services.AddHttpClients();
 builder.Services.AddOpenApi();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{    
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "CashFlow API Gateway",
-        Version = "v1",
-        Description = "API Gateway unificando os serviços de Transactions e Consolidation."
-    });
-
-    // Define a segurança usando o esquema Bearer
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "Insira 'Bearer' [espaço] e o seu token JWT\nExemplo: Bearer eyJhbGciOiJIUzI1NiIsInR...",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-
-    // Requer o esquema Bearer para todos os endpoints
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        }
-    });
-});
+builder.Services.AddSwagger();
 
 var app = builder.Build();
 
-// Ativa autenticação e autorização
 app.UseAuthentication();
 app.UseAuthorization();
 
