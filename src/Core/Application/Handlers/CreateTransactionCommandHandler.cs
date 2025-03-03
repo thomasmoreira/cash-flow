@@ -1,6 +1,7 @@
 ﻿using CashFlow.Application.Commands;
 using CashFlow.Domain.Entities;
 using CashFlow.Domain.Enums;
+using CashFlow.Domain.Events;
 using CashFlow.Domain.Repositories;
 using MassTransit;
 using MediatR;
@@ -10,12 +11,12 @@ namespace CashFlow.Application.Handlers;
 public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Guid>
 {
     private ITransactionRepository _repository;
-    private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IBus _bus;
 
-    public CreateTransactionCommandHandler(ITransactionRepository repository, IPublishEndpoint publishEndpoint)
+    public CreateTransactionCommandHandler(ITransactionRepository repository, IBus bus)
     {
         _repository = repository;
-        _publishEndpoint = publishEndpoint;
+        _bus = bus;
     }
 
     public async Task<Guid> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
@@ -25,8 +26,12 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
         await _repository.AddAsync(transaction);
 
-        // Publica o lançamento para a fila via MassTransit
-        await _publishEndpoint.Publish(transaction, cancellationToken);
+        var @event = new TransactionCreatedEvent
+        {
+            TransactionId = transaction.Id
+        };
+
+        await _bus.Publish(@event, cancellationToken);
 
         return transaction.Id;
     }

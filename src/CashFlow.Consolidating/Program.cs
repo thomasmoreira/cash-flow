@@ -1,4 +1,6 @@
 using CashFlow.Consolidating.Messaging;
+using CashFlow.Consolidating.Services;
+using CashFlow.Domain.Services;
 using MassTransit;
 using Serilog;
 
@@ -22,8 +24,8 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
-// Caso deseje expor um endpoint para consulta do saldo consolidado:
-//builder.Services.AddSingleton<ConsolidacaoService>(); // Serviço que gerencia os saldos
+
+builder.Services.AddSingleton<IConsolidatingService, ConsolidatingService>(); 
 
 var app = builder.Build();
 

@@ -1,17 +1,15 @@
-﻿using CashFlow.Domain.Entities;
+﻿using CashFlow.Domain.Events;
 using MassTransit;
-using RabbitMQ.Client;
 
 namespace CashFlow.Consolidating.Messaging;
 
-public class TransactionConsumer : IConsumer<Transaction>
+public class TransactionConsumer : IConsumer<TransactionCreatedEvent>
 {
-    public async Task Consume(ConsumeContext<Transaction> context)
+    public async Task Consume(ConsumeContext<TransactionCreatedEvent> context)
     {
-        var lancamento = context.Message;
-        // Lógica para processar o lançamento
-        Console.WriteLine($"Processando lançamento: {lancamento.Id}");
-        // Aqui você pode atualizar o saldo, persistir dados, etc.
+        var @event = context.Message;
+
+        Console.WriteLine($"Processando lançamento: {@event}");
 
         await Task.CompletedTask;
     }
