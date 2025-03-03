@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace CashFlow.Infraestructure.Middlewares;
@@ -38,7 +39,8 @@ public class ErrorHandlerMiddleware
 
     private static async Task HandleValidationExceptionAsync(HttpContext context, ValidationException ex)
     {
-        context.Response.ContentType = "application/json";
+        //context.Response.ContentType = "application/json";
+        context.Response.ContentType = "application/problem+json";
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
 
@@ -62,13 +64,18 @@ public class ErrorHandlerMiddleware
             Detail = "Um ou mais erros de validação ocorreram."
         };
 
-        var result = JsonSerializer.Serialize(problemDetails);
+        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+        var result = JsonSerializer.Serialize(problemDetails, options);
         await context.Response.WriteAsync(result);
+
+        //var result = JsonSerializer.Serialize(problemDetails);
+        //await context.Response.WriteAsync(result);
     }
 
     private static Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
-        context.Response.ContentType = "application/json";
+        //context.Response.ContentType = "application/json";
+        context.Response.ContentType = "application/problem+json";
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
         var problemDetails = new ProblemDetails
@@ -78,7 +85,11 @@ public class ErrorHandlerMiddleware
             Detail = ex.Message
         };
 
-        var result = JsonSerializer.Serialize(problemDetails);
+        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+        var result = JsonSerializer.Serialize(problemDetails, options);
         return context.Response.WriteAsync(result);
+
+        //var result = JsonSerializer.Serialize(problemDetails);
+        //return context.Response.WriteAsync(result);
     }
 }

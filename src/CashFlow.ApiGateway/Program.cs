@@ -42,21 +42,27 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapPost("/gateway/transactions", async (CreateTransactionRequest request, IHttpClientFactory clientFactory) =>
+app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransactionRequest request, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Transactions");
 
     var json = System.Text.Json.JsonSerializer.Serialize(request);
     var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-    var result = await client.PostAsync("/transactions", content);
-    return result.Content;
+    var response = await client.PostAsync("/transactions", content);
+
+    // Define o status code da resposta
+    context.Response.StatusCode = (int)response.StatusCode;
+
+    // Opcional: copia o conteúdo da resposta, se necessário
+    await response.Content.CopyToAsync(context.Response.Body);
+
 })
-.WithName("CriarLancamento")
+.WithName("Create Transaction")
 .Produces<TransactionResponse>(StatusCodes.Status200OK)
-.Produces(StatusCodes.Status500InternalServerError)
-.Produces(StatusCodes.Status400BadRequest)
-.WithOpenApi(); ;
+.ProducesProblem(StatusCodes.Status400BadRequest)
+.ProducesProblem(StatusCodes.Status500InternalServerError)
+.WithOpenApi();
 
 app.MapGet("/gateway/consolidating", async (DateTime date, IHttpClientFactory clientFactory) =>
 {
