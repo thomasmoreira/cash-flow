@@ -55,6 +55,15 @@ services:
       - "15672:15672"
     networks:
       - cashflow-network
+      
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "5341:80"
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_ADMINPASSWORD: "cashflow"
 
 volumes:
   postgres_data:

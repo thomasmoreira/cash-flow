@@ -1,37 +1,52 @@
 using CashFlow.Consolidating.Messaging;
 using CashFlow.Consolidating.Services;
 using CashFlow.Domain.Services;
+using CashFlow.Infraestructure.Common;
 using MassTransit;
 using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+StaticLogger.EnsureInitialized();
+Log.Information("Server Booting Up...");
 
-builder.Services.AddOpenApi();
-
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Seq("http://localhost:5341")
-    .CreateLogger();
-
-builder.Services.AddMassTransit(x =>
+try
 {
-    x.AddConsumer<TransactionConsumer>();   
+    var builder = WebApplication.CreateBuilder(args);
 
-    x.UsingRabbitMq((context, config) =>
+    builder.Services.AddOpenApi();
+
+    builder.Services.AddMassTransit(x =>
     {
-        config.ConfigureEndpoints(context);
+        x.AddConsumer<TransactionConsumer>();
 
+        x.UsingRabbitMq((context, config) =>
+        {
+            config.ConfigureEndpoints(context);
+
+        });
     });
-});
 
 
-builder.Services.AddSingleton<IConsolidatingService, ConsolidatingService>(); 
+    builder.Services.AddSingleton<IConsolidatingService, ConsolidatingService>();
 
-var app = builder.Build();
+    var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+    }
+
+    app.Run();
+}
+catch (Exception ex)
 {
-    app.MapOpenApi();
+    StaticLogger.EnsureInitialized();
+    Log.Fatal(ex, "Unhandled exception");
+}
+finally
+{
+    StaticLogger.EnsureInitialized();
+    Log.Information("Server Shutting down...");
+    Log.CloseAndFlush();
 }
 
-app.Run();
