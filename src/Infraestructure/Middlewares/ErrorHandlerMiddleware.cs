@@ -41,9 +41,6 @@ public class ErrorHandlerMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
-        //var errors = ex.Errors
-        //    .GroupBy(e => e.PropertyName)
-        //    .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
         var errors = ex.Errors
             .GroupBy(e => e.PropertyName)
