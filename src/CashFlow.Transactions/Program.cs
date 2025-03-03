@@ -59,7 +59,7 @@ try
     {
         Log
            .ForContext("Command", command)
-           .Information("Recebendo requisiçao para registro de transação");
+           .Information("Received CreateTransactionCommand");
 
         return await mediator.Send(command);
 

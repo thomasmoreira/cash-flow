@@ -24,6 +24,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
     public async Task<Guid> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
     {
+        
         _logger.LogInformation("Creating transaction");
 
         var type = (TransactionType)request.Type;
@@ -31,7 +32,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
         await _repository.AddAsync(transaction);
 
-        _logger.LogInformation("Transaction created");
+        _logger.LogInformation("Transaction { TransactionId } created", transaction.Id);
 
         _logger.LogInformation("Publishing TransactionCreatedEvent");
 

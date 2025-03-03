@@ -11,6 +11,7 @@ Log.Information("Server Booting Up...");
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    builder.Host.UseSerilog();
 
     builder.Services.AddOpenApi();
 
