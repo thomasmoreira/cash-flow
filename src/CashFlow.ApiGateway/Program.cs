@@ -1,5 +1,7 @@
+using CashFlow.ApiGateway;
 using CashFlow.ApiGateway.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -9,7 +11,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure os parâmetros do JWT (esses valores normalmente vêm do appsettings.json)
+builder.Services.Configure<ServiceUrlsOptions>(builder.Configuration.GetSection("ServiceUrls"));
+
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -40,13 +43,15 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Seq("http://localhost:5341")
     .CreateLogger();
 
-builder.Services.AddHttpClient("Transactions", client =>
+builder.Services.AddHttpClient("Transactions", (sp, client) =>
 {
-    client.BaseAddress = new Uri("http://localhost:5001");
+    var options = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
+    client.BaseAddress = new Uri(options.Transactions);
 });
-builder.Services.AddHttpClient("Consolidating", client =>
+builder.Services.AddHttpClient("Consolidating", (sp,client) =>
 {
-    client.BaseAddress = new Uri("http://localhost:5002");
+    var options = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
+    client.BaseAddress = new Uri(options.Consolidation);
 });
 
 builder.Services.AddOpenApi();

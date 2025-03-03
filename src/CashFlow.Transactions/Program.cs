@@ -21,8 +21,6 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog();
 
-
-    // Use as mesmas configurações definidas no API Gateway:
     var jwtIssuer = builder.Configuration["Jwt:Issuer"];
     var jwtAudience = builder.Configuration["Jwt:Audience"];
     var jwtKey = builder.Configuration["Jwt:Key"];
