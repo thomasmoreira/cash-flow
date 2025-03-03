@@ -19,10 +19,10 @@ public class TransactionRepository : ITransactionRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Transaction>> GetAsync(DateTime data)
+    public async Task<Transaction?> GetAsync(Guid Id)
     {
         return await _context.Transactions
-                .Where(t => t.Date.Date == data.Date)
-                .ToListAsync();
+                .Where(t => t.Id == Id)
+                .FirstOrDefaultAsync();
     }
 }

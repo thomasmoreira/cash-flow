@@ -2,5 +2,7 @@
 
 public interface IConsolidatingService
 {
+
+    Task<bool> Consolidate(Guid TransactionId);    
     Task<decimal> DailyConsolidateAsync();
 }

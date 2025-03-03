@@ -19,9 +19,11 @@ public class TransactionConfig : IEntityTypeConfiguration<Transaction>
             .HasPrecision(10, 2);
 
         builder.Property(t => t.Description)
+            .HasColumnType("VARCHAR")
             .HasMaxLength(100);
 
         builder.Property(t => t.Date)
+            .HasColumnType("DATETIME")
             .IsRequired();
     }
 }
