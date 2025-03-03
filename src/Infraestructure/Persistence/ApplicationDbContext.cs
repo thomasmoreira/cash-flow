@@ -11,7 +11,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Transaction> Transactions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {        
-        modelBuilder.Entity<Transaction>().HasKey(t => t.Id);
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }
 }

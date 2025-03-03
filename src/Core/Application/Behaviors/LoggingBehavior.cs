@@ -1,19 +1,31 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace CashFlow.Application.Behaviors;
 
-public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : class
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        // Log antes de executar o handler
-        Console.WriteLine($"Iniciando {typeof(TRequest).Name}");
+        var correlationId = Guid.NewGuid();
 
+        // Request Logging
+        // Serialize the request
+        var requestJson = JsonSerializer.Serialize(request);
+        // Log the serialized request
+        logger.LogInformation("Handling request {CorrelationID}: {Request}", correlationId, requestJson);
+
+        // Response logging
         var response = await next();
+        // Serialize the request
+        var responseJson = JsonSerializer.Serialize(response);
+        // Log the serialized request
+        logger.LogInformation("Response for {Correlation}: {Response}", correlationId, responseJson);
 
-        // Log após execução
-        Console.WriteLine($"Finalizando {typeof(TRequest).Name}");
-
+        // Return response
         return response;
     }
 }
