@@ -1,7 +1,39 @@
 using CashFlow.ApiGateway.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure os parâmetros do JWT (esses valores normalmente vêm do appsettings.json)
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+var jwtKey = builder.Configuration["Jwt:Key"];
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
+builder.Services.AddAuthorization();
+
 
 // Configuração do Serilog para Seq
 Log.Logger = new LoggerConfiguration()
@@ -28,9 +60,43 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "API Gateway unificando os serviços de Transactions e Consolidation."
     });
+
+    // Define a segurança usando o esquema Bearer
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Insira 'Bearer' [espaço] e o seu token JWT\nExemplo: Bearer eyJhbGciOiJIUzI1NiIsInR...",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    // Requer o esquema Bearer para todos os endpoints
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
 });
 
 var app = builder.Build();
+
+// Ativa autenticação e autorização
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -41,6 +107,38 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "CashFlow API Gateway V1");
     });
 }
+
+app.MapPost("/login", (LoginRequest loginRequest) =>
+{
+    // Aqui você validaria as credenciais do usuário
+    if (loginRequest.Username != "usuario" || loginRequest.Password != "senha")
+    {
+        return Results.Unauthorized();
+    }
+
+    var claims = new[]
+    {
+        new Claim(JwtRegisteredClaimNames.Sub, loginRequest.Username),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
+
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+    var token = new JwtSecurityToken(
+        issuer: jwtIssuer,
+        audience: jwtAudience,
+        claims: claims,
+        expires: DateTime.Now.AddHours(1),
+        signingCredentials: creds);
+
+    return Results.Ok(new
+    {
+        token = new JwtSecurityTokenHandler().WriteToken(token)
+    });
+})
+.WithName("Login")
+.WithOpenApi();
 
 app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransactionRequest request, IHttpClientFactory clientFactory) =>
 {
@@ -62,7 +160,8 @@ app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransacti
 .Produces<TransactionResponse>(StatusCodes.Status200OK)
 .ProducesProblem(StatusCodes.Status400BadRequest)
 .ProducesProblem(StatusCodes.Status500InternalServerError)
-.WithOpenApi();
+.WithOpenApi()
+.RequireAuthorization();
 
 app.MapGet("/gateway/consolidating", async (DateTime date, IHttpClientFactory clientFactory) =>
 {
