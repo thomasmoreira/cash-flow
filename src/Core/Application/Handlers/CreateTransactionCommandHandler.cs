@@ -32,7 +32,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
         await _repository.AddAsync(transaction);
 
-        _logger.LogInformation("Transaction { TransactionId } created", transaction.Id);
+        _logger.LogInformation("Transaction {TransactionId} created", transaction.Id);
 
         _logger.LogInformation("Publishing TransactionCreatedEvent");
 

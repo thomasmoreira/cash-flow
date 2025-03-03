@@ -16,11 +16,11 @@ public class TransactionConsumer : IConsumer<TransactionCreatedEvent>
     {
         var @event = context.Message;
 
-        _logger.LogInformation("Processing transaction {TransactionId}", @event);
+        _logger.LogInformation("Processing transaction {TransactionId}", @event.TransactionId);
 
         Console.WriteLine($"Processando lançamento: {@event}");
 
-        _logger.LogInformation("Transaction { TransactionId } processed", @event);
+        _logger.LogInformation("Transaction {TransactionId} processed", @event.TransactionId);
 
         await Task.CompletedTask;
     }
