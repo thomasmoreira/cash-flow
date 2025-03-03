@@ -1,6 +1,9 @@
 ﻿using CashFlow.Infraestructure.Handlers;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Polly;
+using Polly.Extensions.Http;
+using System.Net.Http.Headers;
 
 namespace CashFlow.ApiGateway;
 
@@ -66,6 +69,42 @@ public static class Startup
                     }
                 });
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddResilientHttpClients(this IServiceCollection services, IConfiguration configuration)
+    {        
+        var retryPolicy = HttpPolicyExtensions
+            .HandleTransientHttpError() // 5xx ou 408
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        
+        var circuitBreakerPolicy = HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
+        
+        services.AddHttpClient("Transactions", (sp, client) =>
+        {
+            var serviceOptions = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
+            client.BaseAddress = new Uri(serviceOptions.Transactions);
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        })
+        .AddPolicyHandler(retryPolicy)
+        .AddPolicyHandler(circuitBreakerPolicy)
+        .AddHttpMessageHandler<TokenPropagationHandler>();
+
+
+
+        services.AddHttpClient("Consolidation", (sp, client) =>
+        {
+            var serviceOptions = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
+            client.BaseAddress = new Uri(serviceOptions.Consolidation);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        })
+        .AddPolicyHandler(retryPolicy)
+        .AddPolicyHandler(circuitBreakerPolicy)
+        .AddHttpMessageHandler<TokenPropagationHandler>();
 
         return services;
     }

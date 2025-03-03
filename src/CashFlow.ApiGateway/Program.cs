@@ -27,7 +27,8 @@ var jwtAudience = builder.Configuration["Jwt:Audience"];
 var jwtKey = builder.Configuration["Jwt:Key"];
 
 
-builder.Services.AddHttpClients();
+//builder.Services.AddHttpClients();
+builder.Services.AddResilientHttpClients(builder.Configuration);
 builder.Services.AddOpenApi();
 builder.Services.AddSwagger();
 
@@ -84,7 +85,7 @@ app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransacti
     var client = clientFactory.CreateClient("Transactions");
 
     var json = System.Text.Json.JsonSerializer.Serialize(request);
-    var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
     var response = await client.PostAsync("/transactions", content);
 

@@ -54,8 +54,13 @@ public class ConsolidatingService : IConsolidatingService
         return false;
     }
 
-    public async Task<decimal> DailyConsolidateAsync()
+    public Task<DailyConsolidation> DailyConsolidationAsync()
     {
-        return 0;
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<DailyConsolidation>> DailyConsolidationReportAsync()
+    {
+        throw new NotImplementedException();
     }
 }
