@@ -19,7 +19,6 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, config) =>
     {
         config.ConfigureEndpoints(context);
-        //config.Host(new Uri("amqp://guest:guest@rabbitmq:5672/"));
 
     });
 });
