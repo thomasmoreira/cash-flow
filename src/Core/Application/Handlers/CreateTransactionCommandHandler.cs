@@ -20,7 +20,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
     public async Task<Guid> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
     {
-        var type = request.Type.ToLower() == "debito" ? TransactionType.Expense : TransactionType.Income;
+        var type = (TransactionType)request.Type;
         var transaction = new Transaction(Guid.NewGuid(), request.Date, type, request.Amount, request.Description);
 
         await _repository.AddAsync(transaction);

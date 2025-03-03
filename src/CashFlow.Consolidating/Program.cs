@@ -16,23 +16,9 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, config) =>
     {
-        config.Host(new Uri("rabbitmq://localhost"), h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
-        //config.ReceiveEndpoint("send-command", e =>
-        //{
-        //    e.Consumer<SenderService>(context);
-        //});
-        //config.ReceiveEndpoint("publish-event", e =>
-        //{
-        //    e.Consumer<PublisherService>(context);
-        //});
-        //config.ReceiveEndpoint("request-response", e =>
-        //{
-        //    e.Consumer<RequestResponseService>(context);
-        //});
+        config.ConfigureEndpoints(context);
+        //config.Host(new Uri("amqp://guest:guest@rabbitmq:5672/"));
+
     });
 });
 

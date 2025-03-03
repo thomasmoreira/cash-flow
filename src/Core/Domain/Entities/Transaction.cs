@@ -1,5 +1,4 @@
 ﻿using CashFlow.Domain.Enums;
-using System.Diagnostics;
 
 namespace CashFlow.Domain.Entities;
 

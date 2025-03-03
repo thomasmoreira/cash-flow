@@ -1,3 +1,4 @@
+using CashFlow.ApiGateway.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,47 +8,67 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Seq("http://localhost:5341")
     .CreateLogger();
 
-
-// Registro dos HttpClients para se comunicar com os serviços
 builder.Services.AddHttpClient("Transactions", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5001"); // Porta do serviço de Lançamentos
+    client.BaseAddress = new Uri("http://localhost:5001");
 });
 builder.Services.AddHttpClient("Consolidating", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5002"); // Porta do serviço de Consolidação
+    client.BaseAddress = new Uri("http://localhost:5002");
 });
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{    
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "CashFlow API Gateway",
+        Version = "v1",
+        Description = "API Gateway unificando os serviços de Transactions e Consolidation."
+    });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "CashFlow API Gateway V1");
+    });
 }
 
-// Expondo endpoint de criação de lançamento – o gateway repassa a requisição para o serviço de lançamentos
-app.MapPost("/gateway/transactions", async (HttpContext context, IHttpClientFactory clientFactory) =>
+app.MapPost("/gateway/transactions", async (CreateTransactionRequest request, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Transactions");
-    // Repasse da requisição: você pode ler o body e encaminhar ou usar um proxy reverso simples
-    var response = await client.PostAsync("/transactions", null/*context.Request.Body*/);
-    context.Response.StatusCode = (int)response.StatusCode;
-    await response.Content.CopyToAsync(context.Response.Body);
-});
 
-// Expondo endpoint de consulta do consolidado
-app.MapGet("/gateway/consolidating", async (HttpContext context, IHttpClientFactory clientFactory) =>
+    var json = System.Text.Json.JsonSerializer.Serialize(request);
+    var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+    var result = await client.PostAsync("/transactions", content);
+    return result.Content;
+})
+.WithName("CriarLancamento")
+.Produces<TransactionResponse>(StatusCodes.Status200OK)
+.Produces(StatusCodes.Status500InternalServerError)
+.Produces(StatusCodes.Status400BadRequest)
+.WithOpenApi(); ;
+
+app.MapGet("/gateway/consolidating", async (DateTime date, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Consolidating");
-    // Transfere os parâmetros da query string, se necessário
-    var data = context.Request.Query["data"].ToString();
-    var response = await client.GetAsync($"/consolidating?data={data}");
-    context.Response.StatusCode = (int)response.StatusCode;
-    await response.Content.CopyToAsync(context.Response.Body);
-});
+    
+    var response = await client.GetAsync($"/consolidating?data={date}");
+    return response.Content;
+    
+})
+.Produces<ConsolidatingResponse>(StatusCodes.Status200OK)
+.Produces(StatusCodes.Status404NotFound)
+.WithName("Get Consolidating");
 
 app.Run();
 

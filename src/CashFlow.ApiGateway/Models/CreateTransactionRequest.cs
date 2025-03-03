@@ -1,8 +1,6 @@
-﻿using MediatR;
+﻿namespace CashFlow.ApiGateway.Models;
 
-namespace CashFlow.Application.Commands;
-
-public class CreateTransactionCommand : IRequest<Guid>
+public class CreateTransactionRequest
 {
     public DateTime Date { get; set; }
     public int Type { get; set; }

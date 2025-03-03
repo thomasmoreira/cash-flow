@@ -27,12 +27,7 @@ builder.Services.AddMassTransit(bus =>
 {
     bus.UsingRabbitMq((ctx, busConfigurator) =>
     {
-        //busConfigurator.Host(builder.Configuration.GetConnectionString("RabbitMq"));
-        busConfigurator.Host("localhost", "/", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
+        busConfigurator.ConfigureEndpoints(ctx);
     });
 });
 
@@ -46,6 +41,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
 }
 
 // Endpoint para registrar lançamentos
