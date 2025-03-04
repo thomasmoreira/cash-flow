@@ -15,6 +15,10 @@ Atua como consumidor dos eventos gerados pelo serviço de Lançamentos, processa
 
 * API Gateway:
 Funciona como porta de entrada unificada para a solução. Ele autentica as requisições com tokens JWT, encaminha as chamadas para os serviços internos e unifica a documentação via Swagger/OpenAPI. Além disso, o gateway gerencia as configurações de endpoints por ambiente, propagando os tokens de autenticação para os demais serviços.
+## Descrição
+
+Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, RabbitMQ, Seq) para orquestrar os microsserviços. Siga os passos abaixo para rodar a solução localmente ou via Docker:
+
 ## Tecnologias Utilizadas
 
 * .NET 9 / ASP.NET Core Minimal APIs:
