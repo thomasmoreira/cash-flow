@@ -64,41 +64,25 @@ Políticas de retry e circuit breaker foram implementadas (com Polly) para lidar
 Configurações Dinâmicas por Ambiente:
 As URLs dos serviços, chaves JWT e outras configurações são centralizadas e podem ser sobrescritas via variáveis de ambiente. Isso permite que a aplicação funcione corretamente tanto em ambiente local (usando localhost) quanto em ambientes de container (usando os nomes dos serviços no Docker Compose).
 
-## Release History
+## Melhorias e Adaptações Futuras
 
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
+Aprimoramento das Políticas de Resiliência:
+Refinar as configurações de retry, circuit breaker e timeout utilizando Polly, de forma a tornar as chamadas HTTP ainda mais robustas.
 
-## Meta
+Integração com um Provedor de Identidade Centralizado:
+Considerar a implementação de uma solução de Identity Server ou o uso de provedores como Auth0/Azure AD para gerenciamento centralizado de usuários e emissão de tokens JWT.
 
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
+Monitoramento e Alertas:
+Integrar com ferramentas como Prometheus e Grafana para monitorar métricas de desempenho, uso e saúde dos serviços, além de configurar alertas para anomalias.
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
+Escalabilidade Dinâmica:
+Explorar a orquestração via Kubernetes ou outras soluções de autoescalonamento, possibilitando a escalabilidade horizontal dos serviços conforme a demanda.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+Cache Distribuído:
+Implementar um cache distribuído (por exemplo, Redis) para melhorar o desempenho das consultas e reduzir a carga no banco de dados.
 
-## Contributing
+Automação de Testes e CI/CD:
+Expandir a cobertura de testes (unitários e de integração) e configurar pipelines de CI/CD para build, testes e deploy automatizados.
 
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
-
-<!-- Markdown link & img dfn's -->
-[npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/datadog-metrics
-[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[wiki]: https://github.com/yourname/yourproject/wiki
+Persistência Segura para Data Protection:
+Configurar armazenamento persistente para chaves de proteção de dados (Data Protection), garantindo a continuidade das operações em ambientes de container.
