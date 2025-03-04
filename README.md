@@ -1,5 +1,5 @@
 # CashFlow
-> O CashFlow é uma solução de controle de fluxo de caixa destinada a ajudar comerciantes a gerenciar seus lançamentos financeiros (débito e crédito) e a obter relatórios consolidados do saldo diário. A aplicação adota uma arquitetura baseada em microsserviços, separando as operações de escrita (Transactions) e de leitura/consolidação (Consolidation), e utiliza um API Gateway para centralizar as requisições, autenticação e a documentação da API.
+O **CashFlow** é uma solução de controle de fluxo de caixa destinada a ajudar comerciantes a gerenciar seus lançamentos financeiros (débito e crédito) e a obter relatórios consolidados do saldo diário. A aplicação adota uma arquitetura baseada em microsserviços, separando as operações de escrita (Transactions) e de leitura/consolidação (Consolidation), e utiliza um API Gateway para centralizar as requisições, autenticação e a documentação da API.
 
 ![](diagrama.png)
 
@@ -7,45 +7,113 @@
 
 A solução é composta por três componentes principais:
 
-* Serviço de Lançamentos (Transactions):
-Recebe os dados dos lançamentos (data, tipo, valor, descrição), valida os comandos utilizando FluentValidation, registra as transações no banco de dados e publica eventos via MassTransit para notificar o serviço de consolidação.
+- **Serviço de Lançamentos (Transactions):**
+  - Recebe dados de lançamentos (data, tipo, valor, descrição).
+  - Valida os comandos utilizando FluentValidation.
+  - Registra transações no banco de dados.
+  - Publica eventos via MassTransit para notificar o serviço de consolidação.
 
-* Serviço de Consolidação (Consolidation):
-Atua como consumidor dos eventos gerados pelo serviço de Lançamentos, processando os lançamentos e atualizando o saldo diário consolidado. Este serviço expõe endpoints para consulta do saldo consolidado.
+- **Serviço de Consolidação (Consolidation):**
+  - Consome os eventos publicados pelo serviço de lançamentos.
+  - Consolida os lançamentos e atualiza o saldo diário.
+  - Exponibiliza endpoints para consulta do saldo consolidado.
+        
+- **API Gateway:**
+  - Atua como porta de entrada unificada para a aplicação.
+  - Gerencia a autenticação via JWT.
+  - Encaminha as requisições para os serviços internos.
+  - Unifica a documentação da API via Swagger/OpenAPI.
+    
+## Como Executar o Projeto
 
-* API Gateway:
-Funciona como porta de entrada unificada para a solução. Ele autentica as requisições com tokens JWT, encaminha as chamadas para os serviços internos e unifica a documentação via Swagger/OpenAPI. Além disso, o gateway gerencia as configurações de endpoints por ambiente, propagando os tokens de autenticação para os demais serviços.
+Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, RabbitMQ, Seq) para orquestrar os microsserviços. Siga os passos abaixo para rodar a solução localmente ou via Docker:
+
+**Executando Localmente (sem Docker)**
+
+## Como Executar o Projeto
+
+Esta seção descreve os passos para rodar o projeto, tanto localmente quanto via Docker Compose.
+
+### Executando Localmente (sem Docker)
+
+1. **Pré-requisitos:**
+    - .NET 9 SDK instalado.
+    - PostgreSQL instalado e rodando  
+      - Certifique-se de que a connection string esteja configurada corretamente no `appsettings.Development.json`.
+    - RabbitMQ e Seq devem estar acessíveis  
+      - (Você pode executá-los via Docker ou em instâncias locais).
+
+2. **Configuração:**
+    - Configure as variáveis de ambiente ou os arquivos de configuração (`appsettings.json`) conforme necessário para apontar para os serviços locais:
+        - Exemplo:
+            - `ServiceUrls__Transactions = http://localhost:5001`
+            - `ServiceUrls__Consolidation = http://localhost:5002`
+            - `Seq:Url = http://localhost:5341`
+    - Certifique-se de que o ambiente esteja definido como `Development`.
+
+3. **Executando a Solução:**
+    - Abra a solução no Visual Studio ou VS Code.
+    - Compile o projeto.
+    - Inicie a aplicação (o API Gateway será o ponto de entrada, normalmente rodando em `http://localhost:5000`).
+    - Acesse a URL `http://localhost:5000/swagger/index.html` para visualizar a documentação da API.
+
+### Executando via Docker Compose
+
+1. **Pré-requisitos:**
+    - Docker e Docker Compose instalados.
+
+2. **Configuração:**
+    - Verifique o arquivo `docker-compose.yml` na raiz do projeto. Nele, as portas dos serviços estão mapeadas da seguinte forma:
+        - **API Gateway:** acessível em `http://localhost:5000`
+        - **Transactions Service:** mapeado em `http://localhost:5001`  
+          - (Internamente, o container escuta na porta 8080)
+        - **Consolidation Service:** mapeado em `http://localhost:5002`
+        - **PostgreSQL:** na porta `5432`
+        - **RabbitMQ:** nas portas `5672` (AMQP) e `15672` (interface de gerenciamento)
+        - **Seq:** acessível em `http://localhost:5341`
+    - As variáveis de ambiente definidas no `docker-compose.yml` garantem que os serviços se comuniquem corretamente entre si.
+
+3. **Rodando o Projeto:**
+    - Na raiz do projeto, abra o terminal e execute:
+      ```bash
+      docker-compose up --build
+      ```
+    - Aguarde até que todos os containers sejam iniciados. Verifique os logs para confirmar que o bus do MassTransit e os demais serviços iniciaram sem erros.
+    - Acesse o API Gateway em `http://localhost:5000` e a documentação Swagger em `http://localhost:5000/swagger/index.html`.
+
+4. **Parando os Containers:**
+    - Para parar os containers, pressione `Ctrl+C` no terminal ou execute:
+      ```bash
+      docker-compose down
+      ```
+### Considerações Adicionais
+
+- **Ambientes Diferenciados:**  
+  O projeto está configurado para utilizar variáveis de ambiente e arquivos de configuração específicos para cada ambiente (por exemplo, `Development` para local e `Production` para Docker).  
+  Garanta que o `ASPNETCORE_ENVIRONMENT` esteja definido corretamente.
+
+- **Logs e Monitoramento:**  
+  Os logs são centralizados com Serilog e enviados para Seq.  
+  - Em ambiente local, acesse `http://localhost:5341` para visualizar os logs.  
+  - No Docker, as variáveis de ambiente garantem que o Seq seja acessível pelo container.
+
+- **Atualização das Migrations:**  
+  O API Gateway aplica as migrations automaticamente ao iniciar a aplicação.  
+  Caso necessário, você pode executar manualmente:
+  ```bash
+  dotnet ef database update --project src/CashFlow.Infraestructure --startup-project src/CashFlow.ApiGateway
+        
 ## Tecnologias Utilizadas
 
-* .NET 9 / ASP.NET Core Minimal APIs:
-Plataforma para construção dos microsserviços e API Gateway.
-
-* Entity Framework Core:
-Acesso e persistência de dados com PostgreSQL.
-
-* PostgreSQL:
-Banco de dados relacional.
-
-* MassTransit & RabbitMQ:
-Implementação de mensageria para comunicação assíncrona entre os serviços.
-
-* Serilog & Seq:
-Log centralizado e monitoramento dos logs.
-
-* FluentValidation:
-Validação dos comandos e requisições.
-
-* Polly:
-Implementação de políticas de retry e circuit breaker para aumentar a resiliência das chamadas HTTP.
-
-* Docker & Docker Compose:
-Containerização e orquestração dos microsserviços.
-
-* MediatR:
-Implementação do padrão CQRS para separar operações de escrita (commands) e leitura (queries).
-
-* xUnit, Moq, FluentAssertions:
-Frameworks para testes unitários e de integração.
+- **.NET 9 / ASP.NET Core Minimal APIs**
+- **Entity Framework Core** (PostgreSQL)
+- **MassTransit & RabbitMQ**
+- **Serilog & Seq**
+- **FluentValidation**
+- **Polly**
+- **Docker & Docker Compose**
+- **MediatR**
+- **xUnit, Moq, FluentAssertions**
 
 ## Decisões Arquiteturais
 
