@@ -10,11 +10,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-
-StaticLogger.EnsureInitialized();
-Log.Information("Server Booting Up...");
-
 var builder = WebApplication.CreateBuilder(args);
+
+StaticLogger.EnsureInitialized(builder.Configuration);
+Log.Information("Server Booting Up...");
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<TokenPropagationHandler>();

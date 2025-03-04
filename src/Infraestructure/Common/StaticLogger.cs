@@ -1,11 +1,15 @@
-﻿using Serilog;
+﻿using CashFlow.Shared;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace CashFlow.Infraestructure.Common
 {
     public static class StaticLogger
     {
-        public static void EnsureInitialized()
+        public static void EnsureInitialized(IConfiguration configuration)
         {
+            var appSettings = configuration.GetSection("AppSettings").Get<AppSettings>();
+
             if (Log.Logger is not Serilog.Core.Logger)
             {
                 Log.Logger = new LoggerConfiguration()                    
@@ -15,7 +19,7 @@ namespace CashFlow.Infraestructure.Common
                     .MinimumLevel.Override("MassTransit", Serilog.Events.LogEventLevel.Information)
                     .Enrich.FromLogContext()
                     .WriteTo.Console()
-                    .WriteTo.Seq("http://localhost:5341")
+                    .WriteTo.Seq(appSettings.Seq.Url)
                     .CreateLogger();
             }
         }

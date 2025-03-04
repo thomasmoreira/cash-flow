@@ -7,13 +7,15 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-StaticLogger.EnsureInitialized();
-Log.Information("Server Booting Up...");
+
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog();
+
+    StaticLogger.EnsureInitialized(builder.Configuration);
+    Log.Information("Server Booting Up...");
 
     builder.Services.AddJwtAuthentication(builder.Configuration);
 
@@ -59,13 +61,11 @@ try
 }
 catch (Exception ex)
 {
-
-    StaticLogger.EnsureInitialized();
+    
     Log.Fatal(ex, "Unhandled exception");
 }
 finally
-{
-    StaticLogger.EnsureInitialized();
+{    
     Log.Information("Server Shutting down...");
     Log.CloseAndFlush();
 }
