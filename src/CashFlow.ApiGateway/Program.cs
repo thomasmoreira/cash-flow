@@ -23,12 +23,6 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
-//var jwtIssuer = builder.Configuration["Jwt:Issuer"];
-//var jwtAudience = builder.Configuration["Jwt:Audience"];
-//var jwtKey = builder.Configuration["Jwt:Key"];
-
-
-//builder.Services.AddHttpClients();
 builder.Services.AddResilientHttpClients(builder.Configuration);
 builder.Services.AddOpenApi();
 builder.Services.AddSwagger();
@@ -114,6 +108,15 @@ app.MapGet("/gateway/consolidation/daily-consolidation", async (HttpContext cont
     
     var response = await client.GetAsync($"/daily-consolidation?date={date}");
 
+    if (response.Content.Headers.ContentType != null)
+    {
+        context.Response.ContentType = response.Content.Headers.ContentType.ToString();
+    }
+    else
+    {
+        context.Response.ContentType = "application/json";
+    }
+
     context.Response.StatusCode = (int)response.StatusCode;
 
     await response.Content.CopyToAsync(context.Response.Body);
@@ -130,6 +133,15 @@ app.MapGet("/gateway/consolidation/balance-consolidation-report", async (HttpCon
     var client = clientFactory.CreateClient("Consolidating");
 
     var response = await client.GetAsync($"/balance-consolidation-report");
+
+    if (response.Content.Headers.ContentType != null)
+    {
+        context.Response.ContentType = response.Content.Headers.ContentType.ToString();
+    }
+    else
+    {
+        context.Response.ContentType = "application/json";
+    }
 
     context.Response.StatusCode = (int)response.StatusCode;
 
