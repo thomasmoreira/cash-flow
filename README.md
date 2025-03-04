@@ -30,53 +30,63 @@ Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, R
 
 **Executando Localmente (sem Docker)**
 
-1. Pré-requisitos:
+## Como Executar o Projeto
 
-  - .NET 9 SDK instalado.
-  - PostgreSQL instalado e rodando (certifique-se de que a connection string esteja configurada corretamente no appsettings.Development.json).
-  - RabbitMQ e Seq devem estar acessíveis (se preferir, você pode executá-los via Docker ou em instâncias locais).
-  
-2. Configuração:
+Esta seção descreve os passos para rodar o projeto, tanto localmente quanto via Docker Compose.
 
-  * Configure as variáveis de ambiente ou os arquivos de configuração (appsettings.json) conforme necessário para apontar para os serviços locais:
-      * Ex.:
-          * ServiceUrls__Transactions = http://localhost:5001
-          * ServiceUrls__Consolidation = http://localhost:5002
-          * Seq:Url = http://localhost:5341
+### Executando Localmente (sem Docker)
+
+1. **Pré-requisitos:**
+    - .NET 9 SDK instalado.
+    - PostgreSQL instalado e rodando  
+      - Certifique-se de que a connection string esteja configurada corretamente no `appsettings.Development.json`.
+    - RabbitMQ e Seq devem estar acessíveis  
+      - (Você pode executá-los via Docker ou em instâncias locais).
+
+2. **Configuração:**
+    - Configure as variáveis de ambiente ou os arquivos de configuração (`appsettings.json`) conforme necessário para apontar para os serviços locais:
+        - Exemplo:
+            - `ServiceUrls__Transactions = http://localhost:5001`
+            - `ServiceUrls__Consolidation = http://localhost:5002`
+            - `Seq:Url = http://localhost:5341`
+    - Certifique-se de que o ambiente esteja definido como `Development`.
+
+3. **Executando a Solução:**
+    - Abra a solução no Visual Studio ou VS Code.
+    - Compile o projeto.
+    - Inicie a aplicação (o API Gateway será o ponto de entrada, normalmente rodando em `http://localhost:5000`).
+    - Acesse a URL `http://localhost:5000/swagger/index.html` para visualizar a documentação da API.
+
+### Executando via Docker Compose
+
+1. **Pré-requisitos:**
+    - Docker e Docker Compose instalados.
+
+2. **Configuração:**
+    - Verifique o arquivo `docker-compose.yml` na raiz do projeto. Nele, as portas dos serviços estão mapeadas da seguinte forma:
+        - **API Gateway:** acessível em `http://localhost:5000`
+        - **Transactions Service:** mapeado em `http://localhost:5001`  
+          - (Internamente, o container escuta na porta 8080)
+        - **Consolidation Service:** mapeado em `http://localhost:5002`
+        - **PostgreSQL:** na porta `5432`
+        - **RabbitMQ:** nas portas `5672` (AMQP) e `15672` (interface de gerenciamento)
+        - **Seq:** acessível em `http://localhost:5341`
+    - As variáveis de ambiente definidas no `docker-compose.yml` garantem que os serviços se comuniquem corretamente entre si.
+
+3. **Rodando o Projeto:**
+    - Na raiz do projeto, abra o terminal e execute:
+      ```bash
+      docker-compose up --build
+      ```
+    - Aguarde até que todos os containers sejam iniciados. Verifique os logs para confirmar que o bus do MassTransit e os demais serviços iniciaram sem erros.
+    - Acesse o API Gateway em `http://localhost:5000` e a documentação Swagger em `http://localhost:5000/swagger/index.html`.
+
+4. **Parando os Containers:**
+    - Para parar os containers, pressione `Ctrl+C` no terminal ou execute:
+      ```bash
+      docker-compose down
+      ```
       
-* Certifique-se de que o ambiente esteja definido como Development.
-
-3. Executando a Solução:
-
-* Abra a solução no Visual Studio ou VS Code.
-* Compile o projeto.
-* Inicie a aplicação (o API Gateway será o ponto de entrada, normalmente rodando em http://localhost:5000).
-* Acesse a URL http://localhost:5000/swagger/index.html para visualizar a documentação da API.
-
-**Executando via Docker Compose**
-
-1. Pré-requisitos:
-*Docker e Docker Compose instalados.
-
-2. Configuração:
-
-* Verifique o arquivo docker-compose.yml na raiz do projeto. Nele, as portas dos serviços estão mapeadas da seguinte forma:
-   * API Gateway: acessível em http://localhost:5000*
-   * Transactions Service: mapeado em http://localhost:5001 (internamente, o container escuta na porta 8080)
-   * Consolidation Service: mapeado em http://localhost:5002
-   * PostgreSQL: na porta 5432
-   * RabbitMQ: nas portas 5672 (AMQP) e 15672 (interface de gerenciamento)
-   * Seq: acessível em http://localhost:5341
-* As variáveis de ambiente definidas no docker-compose.yml garantem que os serviços se comuniquem corretamente entre si.
-  
-3. Rodando o Projeto:
-
-* Na raiz do projeto, abra o terminal e execute:
-  docker-compose up --build
-
-* Aguarde até que todos os containers sejam iniciados. Verifique os logs para confirmar que o bus do MassTransit e os demais serviços iniciaram sem erros.
-* Acesse o API Gateway em http://localhost:5000 e a documentação Swagger em http://localhost:5000/swagger/index.html.  
-
 ## Tecnologias Utilizadas
 
 - **.NET 9 / ASP.NET Core Minimal APIs**
