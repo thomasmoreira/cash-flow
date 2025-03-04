@@ -7,13 +7,13 @@
 
 A solução é composta por três componentes principais:
 
-Serviço de Lançamentos (Transactions):
+* Serviço de Lançamentos (Transactions):
 Recebe os dados dos lançamentos (data, tipo, valor, descrição), valida os comandos utilizando FluentValidation, registra as transações no banco de dados e publica eventos via MassTransit para notificar o serviço de consolidação.
 
-Serviço de Consolidação (Consolidation):
+* Serviço de Consolidação (Consolidation):
 Atua como consumidor dos eventos gerados pelo serviço de Lançamentos, processando os lançamentos e atualizando o saldo diário consolidado. Este serviço expõe endpoints para consulta do saldo consolidado.
 
-API Gateway:
+* API Gateway:
 Funciona como porta de entrada unificada para a solução. Ele autentica as requisições com tokens JWT, encaminha as chamadas para os serviços internos e unifica a documentação via Swagger/OpenAPI. Além disso, o gateway gerencia as configurações de endpoints por ambiente, propagando os tokens de autenticação para os demais serviços.
 ## Tecnologias Utilizadas
 
