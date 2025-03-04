@@ -4,6 +4,7 @@ using CashFlow.Application;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Handlers;
 using Microsoft.IdentityModel.Tokens;
+using Polly;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -49,8 +50,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapPost("/login", (LoginRequest loginRequest) =>
-{
-    // Aqui você validaria as credenciais do usuário
+{    
     if (loginRequest.Username != "usuario" || loginRequest.Password != "senha")
     {
         return Results.Unauthorized();
@@ -104,17 +104,34 @@ app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransacti
 .RequireAuthorization();
 
 
-app.MapGet("/gateway/consolidating", async (DateTime date, IHttpClientFactory clientFactory) =>
+app.MapGet("/gateway/daily-consolidation", async (HttpContext context, DateTime date, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Consolidating");
     
-    var response = await client.GetAsync($"/consolidating?data={date}");
-    return response.Content;
+    var response = await client.GetAsync($"/daily-consolidation?date={date}");
+
+    context.Response.StatusCode = (int)response.StatusCode;
+
+    await response.Content.CopyToAsync(context.Response.Body);
+
+    //return response.Content;
     
 })
-.Produces<ConsolidatingResponse>(StatusCodes.Status200OK)
+.Produces<DailyConsolidationResponse?>(StatusCodes.Status200OK)
 .Produces(StatusCodes.Status404NotFound)
-.WithName("Get Consolidating");
+.WithName("Get Daily Consolidation");
+
+app.MapGet("/gateway/balance-consolidation-report", async (IHttpClientFactory clientFactory) =>
+{
+    var client = clientFactory.CreateClient("Consolidating");
+
+    var response = await client.GetAsync($"/balance-consolidation-report");
+    return response.Content;
+
+})
+.Produces<IEnumerable<DailyConsolidationResponse>?>(StatusCodes.Status200OK)
+.Produces(StatusCodes.Status404NotFound)
+.WithName("Get Daily Consolidation Report");
 
 app.Run();
 

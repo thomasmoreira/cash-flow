@@ -19,6 +19,11 @@ namespace CashFlow.Infraestructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<DailyConsolidation>?> GetConsolidateBalanceReport()
+        {
+            return await _context.DailyConsolidations.ToListAsync();
+        }
+
         public Task<DailyConsolidation?> GetDailyConsolidatingAsync(DateTime date)
         {
             return _context.DailyConsolidations

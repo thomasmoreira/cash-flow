@@ -1,8 +1,9 @@
 ﻿using CashFlow.Domain.Entities;
 using CashFlow.Domain.Repositories;
 using CashFlow.Domain.Services;
+using Microsoft.Extensions.Logging;
 
-namespace CashFlow.Consolidating.Services;
+namespace CashFlow.Infraestructure.Services;
 
 public class ConsolidatingService : IConsolidatingService
 {
@@ -54,13 +55,13 @@ public class ConsolidatingService : IConsolidatingService
         return false;
     }
 
-    public Task<DailyConsolidation> DailyConsolidationAsync()
+    public async Task<DailyConsolidation?> DailyConsolidationAsync(DateTime date)
     {
-        throw new NotImplementedException();
+        return await _consolidatingRepository.GetDailyConsolidatingAsync(date);
     }
 
-    public Task<IEnumerable<DailyConsolidation>> DailyConsolidationReportAsync()
+    public async Task<IEnumerable<DailyConsolidation>?> ConsolidateBalanceReportAsync()
     {
-        throw new NotImplementedException();
+        return await _consolidatingRepository.GetConsolidateBalanceReport();
     }
 }

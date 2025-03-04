@@ -1,5 +1,7 @@
 ﻿using CashFlow.Application.Behaviors;
+using CashFlow.Domain.Services;
 using CashFlow.Infraestructure;
+using CashFlow.Infraestructure.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,7 +21,9 @@ public static class Startup
         services
             .AddValidatorsFromAssembly(assembly)
             .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
-            
+
+        services.AddScoped<IConsolidatingService, ConsolidatingService>();
+
         return services;
     }
 
@@ -54,9 +58,9 @@ public static class Startup
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        // Aqui você pode registrar os seus serviços de Application e Infraestructure.
-        services.AddApplication();         // Método de extensão já existente do seu projeto
-        services.AddInfraestructure();       // Método de extensão já existente do seu projeto
+        
+        services.AddApplication();
+        services.AddInfraestructure();
         return services;
     }
 

@@ -1,12 +1,13 @@
 using CashFlow.Application;
+using CashFlow.Application.Queries;
 using CashFlow.Consolidating.Messaging;
-using CashFlow.Consolidating.Services;
-using CashFlow.Domain.Services;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Persistence;
 using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -64,8 +65,7 @@ try
     });
 
     builder.Services.AddApplication();
-    builder.Services.AddInfraestructure();
-    builder.Services.AddScoped<IConsolidatingService, ConsolidatingService>();
+    builder.Services.AddInfraestructure();    
 
     var app = builder.Build();
 
@@ -77,6 +77,12 @@ try
     {
         app.MapOpenApi();
     }
+
+    app.MapGet("/daily-consolidation", async ([FromQuery] DateTime date, IMediator mediator) =>
+    {
+        var query = new GetConsolidatedBalanceQuery(date);
+        return await mediator.Send(query);
+    });     
 
     app.Run();
 }

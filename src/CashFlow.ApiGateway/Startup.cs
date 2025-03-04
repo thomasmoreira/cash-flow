@@ -96,7 +96,7 @@ public static class Startup
 
 
 
-        services.AddHttpClient("Consolidation", (sp, client) =>
+        services.AddHttpClient("Consolidating", (sp, client) =>
         {
             var serviceOptions = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
             client.BaseAddress = new Uri(serviceOptions.Consolidation);
