@@ -23,9 +23,9 @@ Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, R
 
 1. Pré-requisitos:
 
-&nbsp;* .NET 9 SDK instalado.
-&nbsp;* PostgreSQL instalado e rodando (certifique-se de que a connection string esteja configurada corretamente no appsettings.Development.json).
-&nbsp;* RabbitMQ e Seq devem estar acessíveis (se preferir, você pode executá-los via Docker ou em instâncias locais).
+*   .NET 9 SDK instalado.
+*   PostgreSQL instalado e rodando (certifique-se de que a connection string esteja configurada corretamente no appsettings.Development.json).
+*   RabbitMQ e Seq devem estar acessíveis (se preferir, você pode executá-los via Docker ou em instâncias locais).
   
 2. Configuração:
 
