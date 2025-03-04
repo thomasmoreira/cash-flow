@@ -86,7 +86,23 @@ Esta seção descreve os passos para rodar o projeto, tanto localmente quanto vi
       ```bash
       docker-compose down
       ```
-      
+### Considerações Adicionais
+
+- **Ambientes Diferenciados:**  
+  O projeto está configurado para utilizar variáveis de ambiente e arquivos de configuração específicos para cada ambiente (por exemplo, `Development` para local e `Production` para Docker).  
+  Garanta que o `ASPNETCORE_ENVIRONMENT` esteja definido corretamente.
+
+- **Logs e Monitoramento:**  
+  Os logs são centralizados com Serilog e enviados para Seq.  
+  - Em ambiente local, acesse `http://localhost:5341` para visualizar os logs.  
+  - No Docker, as variáveis de ambiente garantem que o Seq seja acessível pelo container.
+
+- **Atualização das Migrations:**  
+  O API Gateway aplica as migrations automaticamente ao iniciar a aplicação.  
+  Caso necessário, você pode executar manualmente:
+  ```bash
+  dotnet ef database update --project src/CashFlow.Infraestructure --startup-project src/CashFlow.ApiGateway
+        
 ## Tecnologias Utilizadas
 
 - **.NET 9 / ASP.NET Core Minimal APIs**
