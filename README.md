@@ -23,18 +23,18 @@ Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, R
 
 1. Pré-requisitos:
 
-* .NET 9 SDK instalado.
-* PostgreSQL instalado e rodando (certifique-se de que a connection string esteja configurada corretamente no appsettings.Development.json).
-* RabbitMQ e Seq devem estar acessíveis (se preferir, você pode executá-los via Docker ou em instâncias locais).
+  * .NET 9 SDK instalado.
+  * PostgreSQL instalado e rodando (certifique-se de que a connection string esteja configurada corretamente no appsettings.Development.json).
+  * RabbitMQ e Seq devem estar acessíveis (se preferir, você pode executá-los via Docker ou em instâncias locais).
   
 2. Configuração:
 
-* Configure as variáveis de ambiente ou os arquivos de configuração (appsettings.json) conforme necessário para apontar para os serviços locais:
-  * Ex.:
-      * ServiceUrls__Transactions = http://localhost:5001
-      * ServiceUrls__Consolidation = http://localhost:5002
-      * Seq:Url = http://localhost:5341
-      * 
+  * Configure as variáveis de ambiente ou os arquivos de configuração (appsettings.json) conforme necessário para apontar para os serviços locais:
+      * Ex.:
+          * ServiceUrls__Transactions = http://localhost:5001
+          * ServiceUrls__Consolidation = http://localhost:5002
+          * Seq:Url = http://localhost:5341
+      
 * Certifique-se de que o ambiente esteja definido como Development.
 
 3. Executando a Solução:
