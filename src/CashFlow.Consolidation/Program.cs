@@ -64,7 +64,7 @@ try
         });
     });
 
-    builder.Services.AddApplication();
+    builder.Services.AddMediatr();
     builder.Services.AddRepositories();
     builder.Services.AddServices();
 
@@ -83,13 +83,15 @@ try
     {
         var query = new GetConsolidatedBalanceQuery(date);
         return await mediator.Send(query);
-    });
+
+    }).RequireAuthorization();
 
     app.MapGet("/balance-consolidation-report", async (IMediator mediator) =>
     {
         var query = new GetConsolidatedBalanceReportQuery();
         return await mediator.Send(query);
-    });
+
+    }).RequireAuthorization();
 
     app.Run();
 }

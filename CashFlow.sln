@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashFlow.ApiGateway", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashFlow.Transactions", "src\CashFlow.Transactions\CashFlow.Transactions.csproj", "{64054E22-BA7E-4AAB-ADEB-02506065CA4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashFlow.Consolidating", "src\CashFlow.Consolidating\CashFlow.Consolidating.csproj", "{B5602388-619E-4341-A315-CCF810EF06A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashFlow.Consolidation", "src\CashFlow.Consolidation\CashFlow.Consolidation.csproj", "{B5602388-619E-4341-A315-CCF810EF06A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheFlow.Shared", "src\CacheFlow.Shared\CacheFlow.Shared.csproj", "{3923BD3A-268F-4104-86AD-B2D918485B71}"
 EndProject

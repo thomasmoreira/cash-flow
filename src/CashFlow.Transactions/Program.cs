@@ -21,9 +21,10 @@ try
 
     builder.Services.AddDatabase(builder.Configuration);
 
+    builder.Services.AddMediatr();
 
-    builder.Services.AddApplication();
     builder.Services.AddRepositories();
+
     builder.Services.AddServices();
 
     builder.Services.AddMassTransitConfiguration();
@@ -50,8 +51,8 @@ try
     app.MapPost("/transactions", async (CreateTransactionCommand command, IMediator mediator) =>
     {
         return await mediator.Send(command);
-    })
-     .RequireAuthorization();
+
+    }).RequireAuthorization();
 
 
     app.Run();

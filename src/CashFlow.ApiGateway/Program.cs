@@ -49,7 +49,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapPost("/login", (LoginRequest loginRequest) =>
-{    
+{
     if (loginRequest.Username != "usuario" || loginRequest.Password != "senha")
     {
         return Results.Unauthorized();
@@ -77,7 +77,10 @@ app.MapPost("/login", (LoginRequest loginRequest) =>
     });
 })
 .WithName("Login")
-.WithOpenApi();
+.WithOpenApi()
+.WithOpenApi()
+.AllowAnonymous();
+
 
 app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransactionRequest request, IHttpClientFactory clientFactory) =>
 {
@@ -102,8 +105,7 @@ app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransacti
 .WithOpenApi()
 .RequireAuthorization();
 
-
-app.MapGet("/gateway/daily-consolidation", async (HttpContext context, DateTime date, IHttpClientFactory clientFactory) =>
+app.MapGet("/gateway/consolidation/daily-consolidation", async (HttpContext context, DateTime date, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Consolidating");
     
@@ -116,9 +118,11 @@ app.MapGet("/gateway/daily-consolidation", async (HttpContext context, DateTime 
 })
 .Produces<DailyConsolidationResponse?>(StatusCodes.Status200OK)
 .Produces(StatusCodes.Status404NotFound)
-.WithName("Get Daily Consolidation");
+.WithName("Get Daily Consolidation")
+.WithOpenApi()
+.RequireAuthorization();
 
-app.MapGet("/gateway/balance-consolidation-report", async (HttpContext context, IHttpClientFactory clientFactory) =>
+app.MapGet("/gateway/consolidation/balance-consolidation-report", async (HttpContext context, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Consolidating");
 
@@ -132,7 +136,9 @@ app.MapGet("/gateway/balance-consolidation-report", async (HttpContext context, 
 })
 .Produces<IEnumerable<DailyConsolidationResponse>?>(StatusCodes.Status200OK)
 .Produces(StatusCodes.Status404NotFound)
-.WithName("Get Daily Consolidation Report");
+.WithName("Get Daily Consolidation Report")
+.WithOpenApi()
+.RequireAuthorization();
 
 app.Run();
 

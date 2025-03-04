@@ -11,19 +11,19 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/CashFlow.Consolidating/CashFlow.Consolidating.csproj", "src/CashFlow.Consolidating/"]
-RUN dotnet restore "./src/CashFlow.Consolidating/CashFlow.Consolidating.csproj"
+COPY ["src/CashFlow.Consolidation/CashFlow.Consolidation.csproj", "src/CashFlow.Consolidation/"]
+RUN dotnet restore "./src/CashFlow.Consolidation/CashFlow.Consolidation.csproj"
 COPY . .
-WORKDIR "/src/src/CashFlow.Consolidating"
-RUN dotnet build "./CashFlow.Consolidating.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/src/CashFlow.Consolidation"
+RUN dotnet build "./CashFlow.Consolidation.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./CashFlow.Consolidating.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./CashFlow.Consolidation.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "CashFlow.Consolidating.dll"]
+ENTRYPOINT ["dotnet", "CashFlow.Consolidation.dll"]

@@ -12,7 +12,7 @@ namespace CashFlow.Application;
 
 public static class Startup
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddMediatr(this IServiceCollection services)
     {
         var assembly = Assembly.GetExecutingAssembly();
         services
@@ -56,7 +56,7 @@ public static class Startup
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         
-        services.AddApplication();
+        services.AddMediatr();
         //services.AddInfraestructure();
         return services;
     }
