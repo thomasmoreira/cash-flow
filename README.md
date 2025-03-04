@@ -19,6 +19,31 @@ Funciona como porta de entrada unificada para a solução. Ele autentica as requ
 
 Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, RabbitMQ, Seq) para orquestrar os microsserviços. Siga os passos abaixo para rodar a solução localmente ou via Docker:
 
+Executando Localmente (sem Docker)
+
+Pré-requisitos:
+
+.NET 9 SDK instalado.
+PostgreSQL instalado e rodando (certifique-se de que a connection string esteja configurada corretamente no appsettings.Development.json).
+RabbitMQ e Seq devem estar acessíveis (se preferir, você pode executá-los via Docker ou em instâncias locais).
+Configuração:
+
+Configure as variáveis de ambiente ou os arquivos de configuração (appsettings.json) conforme necessário para apontar para os serviços locais:
+Ex.:
+ServiceUrls__Transactions = http://localhost:5001
+ServiceUrls__Consolidation = http://localhost:5002
+Seq:Url = http://localhost:5341
+Certifique-se de que o ambiente esteja definido como Development.
+Executando a Solução:
+
+Abra a solução no Visual Studio ou VS Code.
+Compile o projeto.
+Inicie a aplicação (o API Gateway será o ponto de entrada, normalmente rodando em http://localhost:5000).
+Para o banco de dados, verifique se as migrations foram aplicadas automaticamente ou execute:
+bash
+Copiar
+
+
 ## Tecnologias Utilizadas
 
 * .NET 9 / ASP.NET Core Minimal APIs:
