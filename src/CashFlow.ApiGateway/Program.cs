@@ -113,20 +113,22 @@ app.MapGet("/gateway/daily-consolidation", async (HttpContext context, DateTime 
     context.Response.StatusCode = (int)response.StatusCode;
 
     await response.Content.CopyToAsync(context.Response.Body);
-
-    //return response.Content;
     
 })
 .Produces<DailyConsolidationResponse?>(StatusCodes.Status200OK)
 .Produces(StatusCodes.Status404NotFound)
 .WithName("Get Daily Consolidation");
 
-app.MapGet("/gateway/balance-consolidation-report", async (IHttpClientFactory clientFactory) =>
+app.MapGet("/gateway/balance-consolidation-report", async (HttpContext context, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Consolidating");
 
     var response = await client.GetAsync($"/balance-consolidation-report");
-    return response.Content;
+
+    context.Response.StatusCode = (int)response.StatusCode;
+
+    await response.Content.CopyToAsync(context.Response.Body);
+
 
 })
 .Produces<IEnumerable<DailyConsolidationResponse>?>(StatusCodes.Status200OK)

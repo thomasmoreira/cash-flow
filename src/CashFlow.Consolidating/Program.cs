@@ -82,7 +82,13 @@ try
     {
         var query = new GetConsolidatedBalanceQuery(date);
         return await mediator.Send(query);
-    });     
+    });
+
+    app.MapGet("/balance-consolidation-report", async (IMediator mediator) =>
+    {
+        var query = new GetConsolidatedBalanceReportQuery();
+        return await mediator.Send(query);
+    });
 
     app.Run();
 }
