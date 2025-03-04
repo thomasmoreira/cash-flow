@@ -3,29 +3,26 @@ using CashFlow.ApiGateway.Models;
 using CashFlow.Application;
 using CashFlow.Application.Common;
 using CashFlow.Application.Dtos;
-using CashFlow.Application.Queries;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Handlers;
 using CashFlow.Shared;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Polly;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
 StaticLogger.EnsureInitialized(builder.Configuration);
-Log.Information("Server Booting Up...");
+
+builder.Host.UseSerilog();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<TokenPropagationHandler>();
-
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
@@ -94,10 +91,8 @@ app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransacti
 
     var response = await client.PostAsync("/transactions", content);
 
-    // Define o status code da resposta
     context.Response.StatusCode = (int)response.StatusCode;
 
-    // Opcional: copia o conteúdo da resposta, se necessário
     await response.Content.CopyToAsync(context.Response.Body);
 
 })
