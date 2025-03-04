@@ -39,12 +39,10 @@ Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, R
 
 3. Executando a Solução:
 
-Abra a solução no Visual Studio ou VS Code.
-Compile o projeto.
-Inicie a aplicação (o API Gateway será o ponto de entrada, normalmente rodando em http://localhost:5000).
-Para o banco de dados, verifique se as migrations foram aplicadas automaticamente ou execute:
-bash
-Copiar
+* Abra a solução no Visual Studio ou VS Code.
+* Compile o projeto.
+* Inicie a aplicação (o API Gateway será o ponto de entrada, normalmente rodando em http://localhost:5000).
+* Acesse a URL http://localhost:5000/swagger/index.html para visualizar a documentação da API.
 
 
 ## Tecnologias Utilizadas
