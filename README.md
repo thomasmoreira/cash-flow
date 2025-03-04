@@ -66,7 +66,7 @@ Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, R
   docker-compose up --build
 
 * Aguarde até que todos os containers sejam iniciados. Verifique os logs para confirmar que o bus do MassTransit e os demais serviços iniciaram sem erros.
-* Acesse o API Gateway em http://localhost:5000 e a documentação Swagger em http://localhost:5000/swagger.  
+* Acesse o API Gateway em http://localhost:5000 e a documentação Swagger em http://localhost:5000/swagger/index.html.  
 
 ## Tecnologias Utilizadas
 
