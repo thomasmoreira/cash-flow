@@ -1,4 +1,5 @@
-﻿using CashFlow.Domain.Entities;
+﻿using CashFlow.Application.Dtos;
+using CashFlow.Domain.Entities;
 using CashFlow.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,5 +25,19 @@ public class TransactionRepository : ITransactionRepository
         return await _context.Transactions
                 .Where(t => t.Id == Id)
                 .FirstOrDefaultAsync();
+    }
+
+    public async Task<(IEnumerable<Transaction> Items, int TotalItems)> GetTransactionsPaginatedAsync(int page, int pageSize)
+    {
+        var query = _context.Transactions.AsQueryable();
+        var totalItems = await query.CountAsync();
+
+        var items = await query
+            .OrderBy(t => t.Date)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalItems);
     }
 }

@@ -1,9 +1,12 @@
 using CashFlow.Application;
 using CashFlow.Application.Commands;
+using CashFlow.Application.Models;
+using CashFlow.Application.Queries;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Persistence;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -55,6 +58,16 @@ try
         return await mediator.Send(command);
 
     }).RequireAuthorization();
+
+    app.MapGet("/transactions", async (IMediator mediator, [FromQuery] int pageSize = 10, [FromQuery] int page = 1) =>
+    {
+        var query = new GetTransactionsQuery(page, pageSize);
+        var result = await mediator.Send(query);
+        return Results.Json(result);
+
+    })
+ .Produces<BalanceConsolidationResponse?>(200)
+ .RequireAuthorization();
 
 
     app.Run();

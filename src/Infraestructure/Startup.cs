@@ -26,6 +26,7 @@ public static class Startup
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IConsolidationService, ConsolidatingService>();
+        services.AddScoped<ITransactionService, TransactionService>();
 
         return services;
     }
