@@ -1,11 +1,11 @@
-﻿using CashFlow.Domain.Entities;
+﻿using CashFlow.Application.Contracts;
+using CashFlow.Domain.Entities;
 using CashFlow.Domain.Repositories;
-using CashFlow.Domain.Services;
 using Microsoft.Extensions.Logging;
 
 namespace CashFlow.Infraestructure.Services;
 
-public class ConsolidatingService : IConsolidatingService
+public class ConsolidatingService : IConsolidationService
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IConsolidatingRepository _consolidatingRepository;

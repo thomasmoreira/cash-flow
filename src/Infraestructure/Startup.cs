@@ -1,7 +1,9 @@
-﻿using CashFlow.Domain.Repositories;
+﻿using CashFlow.Application.Contracts;
+using CashFlow.Domain.Repositories;
 using CashFlow.Infraestructure.Middlewares;
 using CashFlow.Infraestructure.Persistence;
 using CashFlow.Infraestructure.Persistence.Repositories;
+using CashFlow.Infraestructure.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +14,21 @@ namespace CashFlow.Infraestructure;
 
 public static class Startup
 {
-    public static IServiceCollection AddInfraestructure(this IServiceCollection services)
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IConsolidatingRepository, ConsolidatingRepository>();
+       
+
         return services;
     }
 
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IConsolidationService, ConsolidatingService>();
+
+        return services;
+    }
 
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
@@ -40,7 +50,6 @@ public static class Startup
         services.AddMassTransitHostedService();
         return services;
     }
-
 
     public static IApplicationBuilder UseExceptionHandlingMiddleware(this IApplicationBuilder builder)
     {

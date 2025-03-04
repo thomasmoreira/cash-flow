@@ -1,8 +1,8 @@
 ﻿using CashFlow.Domain.Entities;
 
-namespace CashFlow.Domain.Services;
+namespace CashFlow.Application.Contracts;
 
-public interface IConsolidatingService
+public interface IConsolidationService
 {
 
     Task<bool> Consolidate(Guid TransactionId);    

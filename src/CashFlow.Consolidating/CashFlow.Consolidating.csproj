@@ -26,8 +26,4 @@
     <ProjectReference Include="..\Infraestructure\CashFlow.Infraestructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

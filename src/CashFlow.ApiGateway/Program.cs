@@ -4,7 +4,6 @@ using CashFlow.Application;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Handlers;
 using Microsoft.IdentityModel.Tokens;
-using Polly;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

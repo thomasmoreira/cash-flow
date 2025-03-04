@@ -23,7 +23,8 @@ try
 
 
     builder.Services.AddApplication();
-    builder.Services.AddInfraestructure();
+    builder.Services.AddRepositories();
+    builder.Services.AddServices();
 
     builder.Services.AddMassTransitConfiguration();
 

@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core\Application\CashFlow.Application.csproj" />
     <ProjectReference Include="..\Core\Domain\CashFlow.Domain.csproj" />
   </ItemGroup>
 

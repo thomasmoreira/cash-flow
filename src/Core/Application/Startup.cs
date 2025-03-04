@@ -1,7 +1,4 @@
 ﻿using CashFlow.Application.Behaviors;
-using CashFlow.Domain.Services;
-using CashFlow.Infraestructure;
-using CashFlow.Infraestructure.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,7 +19,7 @@ public static class Startup
             .AddValidatorsFromAssembly(assembly)
             .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
 
-        services.AddScoped<IConsolidatingService, ConsolidatingService>();
+        
 
         return services;
     }
@@ -60,7 +57,7 @@ public static class Startup
     {
         
         services.AddApplication();
-        services.AddInfraestructure();
+        //services.AddInfraestructure();
         return services;
     }
 

@@ -65,7 +65,8 @@ try
     });
 
     builder.Services.AddApplication();
-    builder.Services.AddInfraestructure();    
+    builder.Services.AddRepositories();
+    builder.Services.AddServices();
 
     var app = builder.Build();
 

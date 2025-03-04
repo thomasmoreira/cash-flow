@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Application\CashFlow.Application.csproj" />
+    <ProjectReference Include="..\Infraestructure\CashFlow.Infraestructure.csproj" />
   </ItemGroup>
 
 </Project>

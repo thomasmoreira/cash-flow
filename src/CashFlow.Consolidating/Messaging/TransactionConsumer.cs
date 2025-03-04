@@ -1,6 +1,7 @@
-﻿using CashFlow.Domain.Events;
-using CashFlow.Domain.Services;
-using CashFlow.Infraestructure.Extensions;
+﻿using CashFlow.Application.Contracts;
+using CashFlow.Domain.Events;
+using CashFlow.Infraestructure.Services;
+using CashFlow.Shared.Extensions;
 using MassTransit;
 
 namespace CashFlow.Consolidating.Messaging;
@@ -8,9 +9,9 @@ namespace CashFlow.Consolidating.Messaging;
 public class TransactionConsumer : IConsumer<TransactionCreatedEvent>
 {
     private readonly ILogger<TransactionConsumer> _logger;
-    private readonly IConsolidatingService _consolidatingService;
+    private readonly IConsolidationService _consolidatingService;
 
-    public TransactionConsumer(ILogger<TransactionConsumer> logger, IConsolidatingService consolidatingService)
+    public TransactionConsumer(ILogger<TransactionConsumer> logger, IConsolidationService consolidatingService)
     {
         _logger = logger;
         _consolidatingService = consolidatingService;

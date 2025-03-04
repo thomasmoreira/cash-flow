@@ -1,6 +1,6 @@
-﻿using CashFlow.Application.Models;
+﻿using CashFlow.Application.Contracts;
+using CashFlow.Application.Models;
 using CashFlow.Application.Queries;
-using CashFlow.Domain.Services;
 using MassTransit.Initializers;
 using MediatR;
 
@@ -8,9 +8,9 @@ namespace CashFlow.Application.Handlers;
 
 public class GetConsolidatedBalanceReportQueryHandler : IRequestHandler<GetConsolidatedBalanceReportQuery, IEnumerable<BalanceConsolidationResponse>?>
 {
-    private readonly IConsolidatingService _service;
+    private readonly IConsolidationService _service;
 
-    public GetConsolidatedBalanceReportQueryHandler(IConsolidatingService service)
+    public GetConsolidatedBalanceReportQueryHandler(IConsolidationService service)
     {
         _service = service;
     }

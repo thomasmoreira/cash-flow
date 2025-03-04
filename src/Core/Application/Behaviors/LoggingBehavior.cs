@@ -1,4 +1,4 @@
-﻿using CashFlow.Infraestructure.Extensions;
+﻿using CashFlow.Shared.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
