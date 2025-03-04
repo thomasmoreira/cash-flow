@@ -15,11 +15,37 @@ Atua como consumidor dos eventos gerados pelo serviço de Lançamentos, processa
 
 API Gateway:
 Funciona como porta de entrada unificada para a solução. Ele autentica as requisições com tokens JWT, encaminha as chamadas para os serviços internos e unifica a documentação via Swagger/OpenAPI. Além disso, o gateway gerencia as configurações de endpoints por ambiente, propagando os tokens de autenticação para os demais serviços.
-## Usage example
+## Tecnologias Utilizadas
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+.NET 9 / ASP.NET Core Minimal APIs:
+Plataforma para construção dos microsserviços e API Gateway.
 
-_For more examples and usage, please refer to the [Wiki][wiki]._
+Entity Framework Core:
+Acesso e persistência de dados com PostgreSQL.
+
+PostgreSQL:
+Banco de dados relacional.
+
+MassTransit & RabbitMQ:
+Implementação de mensageria para comunicação assíncrona entre os serviços.
+
+Serilog & Seq:
+Log centralizado e monitoramento dos logs.
+
+FluentValidation:
+Validação dos comandos e requisições.
+
+Polly:
+Implementação de políticas de retry e circuit breaker para aumentar a resiliência das chamadas HTTP.
+
+Docker & Docker Compose:
+Containerização e orquestração dos microsserviços.
+
+MediatR:
+Implementação do padrão CQRS para separar operações de escrita (commands) e leitura (queries).
+
+xUnit, Moq, FluentAssertions:
+Frameworks para testes unitários e de integração.
 
 ## Development setup
 
