@@ -1,5 +1,5 @@
 # CashFlow
-> O CashFlow é uma solução de controle de fluxo de caixa destinada a ajudar comerciantes a gerenciar seus lançamentos financeiros (débito e crédito) e a obter relatórios consolidados do saldo diário. A aplicação adota uma arquitetura baseada em microsserviços, separando as operações de escrita (Transactions) e de leitura/consolidação (Consolidation), e utiliza um API Gateway para centralizar as requisições, autenticação e a documentação da API.
+O **CashFlow** é uma solução de controle de fluxo de caixa destinada a ajudar comerciantes a gerenciar seus lançamentos financeiros (débito e crédito) e a obter relatórios consolidados do saldo diário. A aplicação adota uma arquitetura baseada em microsserviços, separando as operações de escrita (Transactions) e de leitura/consolidação (Consolidation), e utiliza um API Gateway para centralizar as requisições, autenticação e a documentação da API.
 
 ![](diagrama.png)
 
@@ -7,14 +7,23 @@
 
 A solução é composta por três componentes principais:
 
-* Serviço de Lançamentos (Transactions):
-Recebe os dados dos lançamentos (data, tipo, valor, descrição), valida os comandos utilizando FluentValidation, registra as transações no banco de dados e publica eventos via MassTransit para notificar o serviço de consolidação.
+- **Serviço de Lançamentos (Transactions):**
+  - Recebe dados de lançamentos (data, tipo, valor, descrição).
+  - Valida os comandos utilizando FluentValidation.
+  - Registra transações no banco de dados.
+  - Publica eventos via MassTransit para notificar o serviço de consolidação.
 
-* Serviço de Consolidação (Consolidation):
-Atua como consumidor dos eventos gerados pelo serviço de Lançamentos, processando os lançamentos e atualizando o saldo diário consolidado. Este serviço expõe endpoints para consulta do saldo consolidado.
-
-* API Gateway:
-Funciona como porta de entrada unificada para a solução. Ele autentica as requisições com tokens JWT, encaminha as chamadas para os serviços internos e unifica a documentação via Swagger/OpenAPI. Além disso, o gateway gerencia as configurações de endpoints por ambiente, propagando os tokens de autenticação para os demais serviços.
+- **Serviço de Consolidação (Consolidation):**
+  - Consome os eventos publicados pelo serviço de lançamentos.
+  - Consolida os lançamentos e atualiza o saldo diário.
+  - Exponibiliza endpoints para consulta do saldo consolidado.
+        
+- **API Gateway:**
+  - Atua como porta de entrada unificada para a aplicação.
+  - Gerencia a autenticação via JWT.
+  - Encaminha as requisições para os serviços internos.
+  - Unifica a documentação da API via Swagger/OpenAPI.
+    
 ## Como Executar o Projeto
 
 Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, RabbitMQ, Seq) para orquestrar os microsserviços. Siga os passos abaixo para rodar a solução localmente ou via Docker:
