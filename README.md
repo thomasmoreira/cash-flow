@@ -19,14 +19,15 @@ Funciona como porta de entrada unificada para a solução. Ele autentica as requ
 
 Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, RabbitMQ, Seq) para orquestrar os microsserviços. Siga os passos abaixo para rodar a solução localmente ou via Docker:
 
-Executando Localmente (sem Docker)
+**Executando Localmente (sem Docker)**
 
-Pré-requisitos:
+1. Pré-requisitos:
 
-.NET 9 SDK instalado.
-PostgreSQL instalado e rodando (certifique-se de que a connection string esteja configurada corretamente no appsettings.Development.json).
-RabbitMQ e Seq devem estar acessíveis (se preferir, você pode executá-los via Docker ou em instâncias locais).
-Configuração:
+* .NET 9 SDK instalado.
+* PostgreSQL instalado e rodando (certifique-se de que a connection string esteja configurada corretamente no appsettings.Development.json).
+* RabbitMQ e Seq devem estar acessíveis (se preferir, você pode executá-los via Docker ou em instâncias locais).
+  
+2. Configuração:
 
 Configure as variáveis de ambiente ou os arquivos de configuração (appsettings.json) conforme necessário para apontar para os serviços locais:
 Ex.:
