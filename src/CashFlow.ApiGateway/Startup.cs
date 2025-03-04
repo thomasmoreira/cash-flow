@@ -1,4 +1,7 @@
 ﻿using CashFlow.Infraestructure.Handlers;
+using CashFlow.Shared;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Polly;
@@ -74,7 +77,9 @@ public static class Startup
     }
 
     public static IServiceCollection AddResilientHttpClients(this IServiceCollection services, IConfiguration configuration)
-    {        
+    {
+        var appSettings = configuration.GetSection("AppSettings").Get<AppSettings>();
+
         var retryPolicy = HttpPolicyExtensions
             .HandleTransientHttpError() // 5xx ou 408
             .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
@@ -85,8 +90,8 @@ public static class Startup
         
         services.AddHttpClient("Transactions", (sp, client) =>
         {
-            var serviceOptions = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
-            client.BaseAddress = new Uri(serviceOptions.Transactions);
+            //var serviceOptions = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
+            client.BaseAddress = new Uri(appSettings.ServiceUrls.Transactions);
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
@@ -98,8 +103,8 @@ public static class Startup
 
         services.AddHttpClient("Consolidating", (sp, client) =>
         {
-            var serviceOptions = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
-            client.BaseAddress = new Uri(serviceOptions.Consolidation);
+            //var serviceOptions = sp.GetRequiredService<IOptions<ServiceUrlsOptions>>().Value;
+            client.BaseAddress = new Uri(appSettings.ServiceUrls.Consolidation);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
         .AddPolicyHandler(retryPolicy)

@@ -1,4 +1,5 @@
 ﻿using CashFlow.Application.Behaviors;
+using CashFlow.Shared;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,9 +27,8 @@ public static class Startup
 
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtIssuer = configuration["Jwt:Issuer"];
-        var jwtAudience = configuration["Jwt:Audience"];
-        var jwtKey = configuration["Jwt:Key"];
+
+        var appSettings = configuration.GetSection("AppSettings").Get<AppSettings>();
 
         services.AddAuthentication(options =>
         {
@@ -43,9 +43,9 @@ public static class Startup
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtIssuer,
-                ValidAudience = jwtAudience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+                ValidIssuer = appSettings.Jwt.Issuer,
+                ValidAudience = appSettings.Jwt.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Jwt.Key))
             };
         });
 

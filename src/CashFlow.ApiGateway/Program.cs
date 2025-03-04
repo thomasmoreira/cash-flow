@@ -3,6 +3,7 @@ using CashFlow.ApiGateway.Models;
 using CashFlow.Application;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Handlers;
+using CashFlow.Shared;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<TokenPropagationHandler>();
 
-builder.Services.Configure<ServiceUrlsOptions>(builder.Configuration.GetSection("ServiceUrls"));
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
