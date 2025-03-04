@@ -79,35 +79,15 @@ Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, R
 
 ## Tecnologias Utilizadas
 
-* .NET 9 / ASP.NET Core Minimal APIs:
-Plataforma para construção dos microsserviços e API Gateway.
-
-* Entity Framework Core:
-Acesso e persistência de dados com PostgreSQL.
-
-* PostgreSQL:
-Banco de dados relacional.
-
-* MassTransit & RabbitMQ:
-Implementação de mensageria para comunicação assíncrona entre os serviços.
-
-* Serilog & Seq:
-Log centralizado e monitoramento dos logs.
-
-* FluentValidation:
-Validação dos comandos e requisições.
-
-* Polly:
-Implementação de políticas de retry e circuit breaker para aumentar a resiliência das chamadas HTTP.
-
-* Docker & Docker Compose:
-Containerização e orquestração dos microsserviços.
-
-* MediatR:
-Implementação do padrão CQRS para separar operações de escrita (commands) e leitura (queries).
-
-* xUnit, Moq, FluentAssertions:
-Frameworks para testes unitários e de integração.
+- **.NET 9 / ASP.NET Core Minimal APIs**
+- **Entity Framework Core** (PostgreSQL)
+- **MassTransit & RabbitMQ**
+- **Serilog & Seq**
+- **FluentValidation**
+- **Polly**
+- **Docker & Docker Compose**
+- **MediatR**
+- **xUnit, Moq, FluentAssertions**
 
 ## Decisões Arquiteturais
 
