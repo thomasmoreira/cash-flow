@@ -81,7 +81,7 @@ public static class Startup
         var appSettings = configuration.GetSection("AppSettings").Get<AppSettings>();
 
         var retryPolicy = HttpPolicyExtensions
-            .HandleTransientHttpError() // 5xx ou 408
+            .HandleTransientHttpError()
             .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         
         var circuitBreakerPolicy = HttpPolicyExtensions

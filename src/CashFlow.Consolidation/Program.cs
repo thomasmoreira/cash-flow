@@ -3,15 +3,10 @@ using CashFlow.Application.Queries;
 using CashFlow.Consolidating.Messaging;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
-using CashFlow.Infraestructure.Persistence;
 using MassTransit;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System.Text;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Server Booting Up...");
@@ -34,6 +29,11 @@ try
 
         x.UsingRabbitMq((context, config) =>
         {
+            config.UseMessageRetry(r =>
+            {
+                r.Interval(3, TimeSpan.FromSeconds(5));
+
+            });
             config.ConfigureEndpoints(context);
 
         });

@@ -18,7 +18,7 @@ public class ConsolidatingService : IConsolidationService
         _logger = logger;
     }
 
-    public async Task<bool> Consolidate(Guid TransactionId)
+    public async Task Consolidate(Guid TransactionId)
     {
         _logger.LogInformation("Consolidating transaction {TransactionId}", TransactionId);
 
@@ -49,10 +49,10 @@ public class ConsolidatingService : IConsolidationService
                 _logger.LogInformation("Daily consolidation for {Date} added", transaction.Date);
             }
 
-            return true;
+            //return true;
         }
 
-        return false;
+        //return false;
     }
 
     public async Task<DailyConsolidation?> DailyConsolidationAsync(DateTime date)
