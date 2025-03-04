@@ -4,6 +4,7 @@ using CashFlow.Application;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Handlers;
 using CashFlow.Shared;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,9 +24,9 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
-var jwtIssuer = builder.Configuration["Jwt:Issuer"];
-var jwtAudience = builder.Configuration["Jwt:Audience"];
-var jwtKey = builder.Configuration["Jwt:Key"];
+//var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+//var jwtAudience = builder.Configuration["Jwt:Audience"];
+//var jwtKey = builder.Configuration["Jwt:Key"];
 
 
 //builder.Services.AddHttpClients();
@@ -49,25 +50,27 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapPost("/login", (LoginRequest loginRequest) =>
+app.MapPost("/login", (LoginRequest loginRequest, IConfiguration configuration) =>
 {
     if (loginRequest.Username != "usuario" || loginRequest.Password != "senha")
     {
         return Results.Unauthorized();
     }
 
+    var appSettings = configuration.GetSection("AppSettings").Get<AppSettings>();
+    
     var claims = new[]
     {
         new Claim(JwtRegisteredClaimNames.Sub, loginRequest.Username),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
 
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Jwt.Key));
     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
     var token = new JwtSecurityToken(
-        issuer: jwtIssuer,
-        audience: jwtAudience,
+        issuer: appSettings.Jwt.Issuer,
+        audience: appSettings.Jwt.Audience,
         claims: claims,
         expires: DateTime.Now.AddHours(1),
         signingCredentials: creds);

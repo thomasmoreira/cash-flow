@@ -21,37 +21,12 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog();
 
-    // Use as mesmas configurações definidas no API Gateway:
-    var jwtIssuer = builder.Configuration["Jwt:Issuer"];
-    var jwtAudience = builder.Configuration["Jwt:Audience"];
-    var jwtKey = builder.Configuration["Jwt:Key"];
-
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-    };
-});
-
-    builder.Services.AddAuthorization();
+    builder.Services.AddJwtAuthentication(builder.Configuration);
 
     builder.Services.AddOpenApi();
 
-    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(connectionString));
+    builder.Services.AddDatabase(builder.Configuration);
+
 
     builder.Services.AddMassTransit(x =>
     {
