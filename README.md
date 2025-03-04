@@ -3,20 +3,18 @@
 
 ![](diagrama.png)
 
-## Installation
+## Descrição
 
-OS X & Linux:
+A solução é composta por três componentes principais:
 
-```sh
-npm install my-crazy-module --save
-```
+Serviço de Lançamentos (Transactions):
+Recebe os dados dos lançamentos (data, tipo, valor, descrição), valida os comandos utilizando FluentValidation, registra as transações no banco de dados e publica eventos via MassTransit para notificar o serviço de consolidação.
 
-Windows:
+Serviço de Consolidação (Consolidation):
+Atua como consumidor dos eventos gerados pelo serviço de Lançamentos, processando os lançamentos e atualizando o saldo diário consolidado. Este serviço expõe endpoints para consulta do saldo consolidado.
 
-```sh
-edit autoexec.bat
-```
-
+API Gateway:
+Funciona como porta de entrada unificada para a solução. Ele autentica as requisições com tokens JWT, encaminha as chamadas para os serviços internos e unifica a documentação via Swagger/OpenAPI. Além disso, o gateway gerencia as configurações de endpoints por ambiente, propagando os tokens de autenticação para os demais serviços.
 ## Usage example
 
 A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
