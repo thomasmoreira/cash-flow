@@ -1,6 +1,6 @@
 using CashFlow.Application;
 using CashFlow.Application.Commands;
-using CashFlow.Application.Models;
+using CashFlow.Application.Dtos;
 using CashFlow.Application.Queries;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
@@ -65,7 +65,7 @@ app.MapGet("/transactions", async (IMediator mediator, [FromQuery] int pageSize 
     return Results.Json(result);
 
 })
-.Produces<BalanceConsolidationResponse?>(200)
+.Produces<BalanceConsolidationDto?>(200)
 .RequireAuthorization();
 
 

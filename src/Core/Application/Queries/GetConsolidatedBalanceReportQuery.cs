@@ -1,9 +1,9 @@
-﻿using CashFlow.Application.Models;
+﻿using CashFlow.Application.Dtos;
 using MediatR;
 
 namespace CashFlow.Application.Queries;
 
-public class GetConsolidatedBalanceReportQuery : IRequest<IEnumerable<BalanceConsolidationResponse>>
+public class GetConsolidatedBalanceReportQuery : IRequest<IEnumerable<BalanceConsolidationDto>>
 {    
 
 }

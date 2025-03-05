@@ -1,5 +1,5 @@
 using CashFlow.Application;
-using CashFlow.Application.Models;
+using CashFlow.Application.Dtos;
 using CashFlow.Application.Queries;
 using CashFlow.Consolidating.Messaging;
 using CashFlow.Infraestructure;
@@ -64,7 +64,7 @@ app.MapGet("/daily-consolidation", async ([FromQuery] DateTime date, IMediator m
     return Results.Json(result);
 
 })
- .Produces<BalanceConsolidationResponse?>(200)
+ .Produces<BalanceConsolidationDto?>(200)
  .RequireAuthorization();
 
 app.MapGet("/balance-consolidation-report", async (IMediator mediator) =>
@@ -74,7 +74,7 @@ app.MapGet("/balance-consolidation-report", async (IMediator mediator) =>
     return Results.Json(result);
 
 })
- .Produces<IEnumerable<BalanceConsolidationResponse>?>(200)
+ .Produces<IEnumerable<BalanceConsolidationDto>?>(200)
  .RequireAuthorization();
 
 app.Run();
