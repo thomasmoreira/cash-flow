@@ -9,17 +9,20 @@ using CashFlow.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 StaticLogger.EnsureInitialized(builder.Configuration);
 
 builder.Host.UseSerilog();
+
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<TokenPropagationHandler>();
@@ -48,7 +51,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapPost("/login", (LoginRequest loginRequest, IConfiguration configuration) =>
 {
-    if (loginRequest.Username != "usuario" || loginRequest.Password != "senha")
+    if (loginRequest.Username != "cashflow" || loginRequest.Password != "123P@$$word!")
     {
         return Results.Unauthorized();
     }
@@ -71,13 +74,13 @@ app.MapPost("/login", (LoginRequest loginRequest, IConfiguration configuration) 
         expires: DateTime.Now.AddHours(1),
         signingCredentials: creds);
 
-    return Results.Ok(new
+    return Results.Ok(new LoginResponse
     {
-        token = new JwtSecurityTokenHandler().WriteToken(token)
+        Token = new JwtSecurityTokenHandler().WriteToken(token)
     });
 })
 .WithName("Login")
-.WithOpenApi()
+.Produces<LoginResponse>(StatusCodes.Status200OK)
 .WithOpenApi()
 .AllowAnonymous();
 
@@ -103,11 +106,11 @@ app.MapPost("/gateway/transactions", async (HttpContext context, CreateTransacti
 .WithOpenApi()
 .RequireAuthorization();
 
-app.MapGet("/gateway/consolidation/daily-consolidation", async (HttpContext context, DateTime date, IHttpClientFactory clientFactory) =>
+app.MapGet("/gateway/consolidation/daily-consolidation", async (HttpContext context, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Consolidating");
     
-    var response = await client.GetAsync($"/daily-consolidation?date={date}");
+    var response = await client.GetAsync($"/daily-consolidation");
 
     if (response.Content.Headers.ContentType != null)
     {

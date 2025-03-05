@@ -15,7 +15,8 @@ public class GetConsolidatedBalanceQueryHandler : IRequestHandler<GetConsolidate
     }
 
     public async Task<BalanceConsolidationDto> Handle(GetConsolidatedBalanceQuery request, CancellationToken cancellationToken)
-    {        
+    {
+
         var consolidation = await _service.DailyConsolidationAsync(request.Date);            
 
         if (consolidation == null)

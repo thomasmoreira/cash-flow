@@ -19,6 +19,7 @@ StaticLogger.EnsureInitialized(builder.Configuration);
 
 builder.Host.UseSerilog();
 
+
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddOpenApi();
@@ -57,9 +58,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapGet("/daily-consolidation", async ([FromQuery] DateTime date, IMediator mediator) =>
+app.MapGet("/daily-consolidation", async (IMediator mediator) =>
 {
-    var query = new GetConsolidatedBalanceQuery(date);
+    var query = new GetConsolidatedBalanceQuery();
     var result = await mediator.Send(query);
     return Results.Json(result);
 

@@ -10,14 +10,20 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 StaticLogger.EnsureInitialized(builder.Configuration);
 
 builder.Host.UseSerilog();
+
+Log.Information("Current Culture: {Culture}", CultureInfo.CurrentCulture.Name);
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 

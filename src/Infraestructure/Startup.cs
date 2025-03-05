@@ -36,6 +36,9 @@ public static class Startup
         var connectionString = configuration.GetConnectionString("PostgreSQL");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
+
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
         return services;
     }
 

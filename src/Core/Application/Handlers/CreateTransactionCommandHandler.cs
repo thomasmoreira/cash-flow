@@ -1,4 +1,5 @@
-﻿using CashFlow.Application.Commands;
+﻿using CacheFlow.Shared.Extensions;
+using CashFlow.Application.Commands;
 using CashFlow.Domain.Entities;
 using CashFlow.Domain.Enums;
 using CashFlow.Domain.Events;

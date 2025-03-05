@@ -44,7 +44,7 @@ public class ConsolidatingService : IConsolidationService
             }
             else
             {
-                var dailyConsolidation = new DailyConsolidation(transaction.Date, newAmount);
+                var dailyConsolidation = new DailyConsolidation(transaction.Date.Date, newAmount);
                 await _consolidatingRepository.AddAsync(dailyConsolidation);
                 _logger.LogInformation("Daily consolidation for {Date} added", transaction.Date);
             }
