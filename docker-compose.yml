@@ -9,7 +9,7 @@ services:
     ports:
       - "5001:8080"
     depends_on:
-      - postgres
+      - mysql
       - rabbitmq
     networks:
       - cashflow-network      
@@ -24,7 +24,7 @@ services:
     ports:
       - "5002:8080"
     depends_on:
-      - postgres
+      - mysql
       - rabbitmq
     networks:
       - cashflow-network      
@@ -44,16 +44,16 @@ services:
     networks:
       - cashflow-network      
 
-  postgres:
-    image: postgres:15-alpine
-    environment: 
-      - POSTGRES_USER=postgres    
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=cashflowdb
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=123P@$$Word!
+      - MYSQL_DATABASE=cashflowdb
+      - MYSQL_ROOT_HOST=%
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     networks:
       - cashflow-network
 
@@ -76,7 +76,7 @@ services:
       - cashflow-network
      
 volumes:
-  postgres_data:
+  mysql_data:
   
 networks:
   cashflow-network:
