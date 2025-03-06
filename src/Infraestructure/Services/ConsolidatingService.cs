@@ -49,10 +49,8 @@ public class ConsolidatingService : IConsolidationService
                 _logger.LogInformation("Daily consolidation for {Date} added", transaction.Date);
             }
 
-            //return true;
         }
 
-        //return false;
     }
 
     public async Task<DailyConsolidation?> DailyConsolidationAsync(DateTime date)
@@ -60,7 +58,7 @@ public class ConsolidatingService : IConsolidationService
         return await _consolidatingRepository.GetDailyConsolidatingAsync(date);
     }
 
-    public async Task<IEnumerable<DailyConsolidation>?> ConsolidateBalanceReportAsync()
+    public async Task<IEnumerable<DailyConsolidation>?> DailyConsolidationReportAsync()
     {
         return await _consolidatingRepository.GetConsolidateBalanceReport();
     }

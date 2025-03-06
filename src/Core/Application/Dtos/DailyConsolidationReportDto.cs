@@ -1,7 +1,7 @@
 ﻿namespace CashFlow.Application.Dtos;
 
-public class BalanceConsolidationDto
+public class DailyConsolidationReportDto
 {
     public DateTime Date { get; set; }
-    public decimal Total { get; set; }
+    public decimal Amount { get; set; }
 }

@@ -2,12 +2,12 @@ using CashFlow.Application;
 using CashFlow.Application.Dtos;
 using CashFlow.Application.Queries;
 using CashFlow.Consolidating.Messaging;
+using CashFlow.Consolidation;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Shared;
 using MassTransit;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 
@@ -44,6 +44,7 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddMediatr();
+builder.Services.AddApplicationMappings();
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 
@@ -52,31 +53,12 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.MapGet("/daily-consolidation", async (IMediator mediator) =>
-{
-    var query = new GetConsolidatedBalanceQuery();
-    var result = await mediator.Send(query);
-    return Results.Json(result);
-
-})
- .Produces<BalanceConsolidationDto?>(200)
- .RequireAuthorization();
-
-app.MapGet("/daily-consolidation-report", async (IMediator mediator) =>
-{
-    var query = new GetConsolidatedBalanceReportQuery();
-    var result = await mediator.Send(query);
-    return Results.Json(result);
-
-})
- .Produces<IEnumerable<BalanceConsolidationDto>?>(200)
- .RequireAuthorization();
+app.MapEndpoints();
 
 app.Run();
 

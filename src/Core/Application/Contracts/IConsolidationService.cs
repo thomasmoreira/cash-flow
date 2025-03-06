@@ -7,6 +7,6 @@ public interface IConsolidationService
 
     Task Consolidate(Guid TransactionId);    
     Task<DailyConsolidation?> DailyConsolidationAsync(DateTime date);
-    Task<IEnumerable<DailyConsolidation>?> ConsolidateBalanceReportAsync();
+    Task<IEnumerable<DailyConsolidation>?> DailyConsolidationReportAsync();
 
 }

@@ -1,6 +1,8 @@
 ﻿using CashFlow.Application.Behaviors;
+using CashFlow.Application.Mappings;
 using CashFlow.Shared;
 using FluentValidation;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -20,8 +22,13 @@ public static class Startup
             .AddValidatorsFromAssembly(assembly)
             .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
 
-        
+        return services;
+    }
 
+    public static IServiceCollection AddApplicationMappings(this IServiceCollection services)
+    {
+        services.AddMapster();
+        MappingConfig.RegisterMappings();
         return services;
     }
 

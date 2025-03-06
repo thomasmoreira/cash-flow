@@ -3,7 +3,7 @@ using MediatR;
 
 namespace CashFlow.Application.Queries;
 
-public class GetConsolidatedBalanceReportQuery : IRequest<IEnumerable<BalanceConsolidationDto>>
+public class GetConsolidatedBalanceReportQuery : IRequest<IEnumerable<DailyConsolidationReportDto>>
 {    
 
 }

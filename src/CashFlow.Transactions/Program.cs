@@ -1,21 +1,14 @@
 using CashFlow.Application;
-using CashFlow.Application.Commands;
-using CashFlow.Application.Dtos;
-using CashFlow.Application.Queries;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Persistence;
 using CashFlow.Shared;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using CashFlow.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
-CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
@@ -23,7 +16,6 @@ StaticLogger.EnsureInitialized(builder.Configuration);
 
 builder.Host.UseSerilog();
 
-Log.Information("Current Culture: {Culture}", CultureInfo.CurrentCulture.Name);
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
@@ -32,6 +24,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDatabase(builder.Configuration);
 
 builder.Services.AddMediatr();
+builder.Services.AddApplicationMappings();
 
 builder.Services.AddRepositories();
 
@@ -58,21 +51,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-app.MapPost("/transactions", async (CreateTransactionCommand command, IMediator mediator) =>
-{
-    return await mediator.Send(command);
-
-}).RequireAuthorization();
-
-app.MapGet("/transactions", async (IMediator mediator, [FromQuery] int pageSize = 10, [FromQuery] int page = 1) =>
-{
-    var query = new GetTransactionsQuery(page, pageSize);
-    var result = await mediator.Send(query);
-    return Results.Json(result);
-
-})
-.Produces<BalanceConsolidationDto?>(200)
-.RequireAuthorization();
+app.MapEndpoints();
 
 
 app.Run();
