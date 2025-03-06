@@ -95,7 +95,7 @@ Esta seção descreve os passos para rodar o projeto, tanto localmente quanto vi
   O API Gateway aplica as migrations automaticamente ao iniciar a aplicação.  
   Caso necessário, você pode executar manualmente:
   ```bash
-  dotnet ef database update --project src/CashFlow.Infraestructure --startup-project src/CashFlow.ApiGateway
+  dotnet ef database update --project src/Infraestructure --startup-project src/CashFlow.Transactions
         
 ## Tecnologias Utilizadas
 
