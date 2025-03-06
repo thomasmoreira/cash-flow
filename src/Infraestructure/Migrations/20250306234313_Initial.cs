@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CashFlow.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class DailyConsolidation : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace CashFlow.Infraestructure.Migrations
                 name: "dailyconsolidation",
                 columns: table => new
                 {
-                    Date = table.Column<DateTime>(type: "DATE", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric(10,2)", precision: 10, scale: 2, nullable: false)
                 },
                 constraints: table =>
@@ -28,10 +28,10 @@ namespace CashFlow.Infraestructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Date = table.Column<DateTime>(type: "TIMESTAMP", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric(10,2)", precision: 10, scale: 2, nullable: false),
-                    Description = table.Column<string>(type: "VARCHAR", maxLength: 100, nullable: false)
+                    Description = table.Column<string>(type: "varchar", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {

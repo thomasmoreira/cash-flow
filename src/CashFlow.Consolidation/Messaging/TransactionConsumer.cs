@@ -1,6 +1,5 @@
 ﻿using CashFlow.Application.Contracts;
 using CashFlow.Domain.Events;
-using CashFlow.Infraestructure.Services;
 using CashFlow.Shared.Extensions;
 using MassTransit;
 
