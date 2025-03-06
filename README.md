@@ -23,12 +23,6 @@ A solução é composta por três componentes principais:
   - Gerencia a autenticação via JWT.
   - Encaminha as requisições para os serviços internos.
   - Unifica a documentação da API via Swagger/OpenAPI.
-    
-## Como Executar o Projeto
-
-Este projeto utiliza .NET, Docker Compose e várias dependências (PostgreSQL, RabbitMQ, Seq) para orquestrar os microsserviços. Siga os passos abaixo para rodar a solução localmente ou via Docker:
-
-**Executando Localmente (sem Docker)**
 
 ## Como Executar o Projeto
 
