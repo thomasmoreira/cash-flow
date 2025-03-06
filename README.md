@@ -59,9 +59,10 @@ Esta seção descreve os passos para rodar o projeto, tanto localmente quanto vi
 2. **Configuração:**
     - Verifique o arquivo `docker-compose.yml` na raiz do projeto. Nele, as portas dos serviços estão mapeadas da seguinte forma:
         - **API Gateway:** acessível em `http://localhost:5000`
-        - **Transactions Service:** mapeado em `http://localhost:5001`  
-          - (Internamente, o container escuta na porta 8080)
-        - **Consolidation Service:** mapeado em `http://localhost:5002`
+        - **Transactions Service:** 
+          - (acessado apenas internamente, na porta 8080 do container)
+        - **Consolidation Service:**
+          - (acessado apenas internamente, na porta 8080 do container)
         - **PostgreSQL:** na porta `5432`
         - **RabbitMQ:** nas portas `5672` (AMQP) e `15672` (interface de gerenciamento)
         - **Seq:** acessível em `http://localhost:5341`
