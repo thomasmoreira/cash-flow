@@ -40,9 +40,9 @@ Esta seção descreve os passos para rodar o projeto, tanto localmente quanto vi
 2. **Configuração:**
     - Configure as variáveis de ambiente ou os arquivos de configuração (`appsettings.json`) conforme necessário para apontar para os serviços locais:
         - Exemplo:
-            - `ServiceUrls__Transactions = http://localhost:5001`
-            - `ServiceUrls__Consolidation = http://localhost:5002`
-            - `Seq:Url = http://localhost:5341`
+            - `AppSettings:ServiceUrls:Transactions = http://localhost:5001`
+            - `AppSettings:ServiceUrls:Consolidation = http://localhost:5002`
+            - `AppSettings:Seq:Url = http://localhost:5341`
     - Certifique-se de que o ambiente esteja definido como `Development`.
 
 3. **Executando a Solução:**
