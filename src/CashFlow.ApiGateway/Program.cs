@@ -9,7 +9,6 @@ using CashFlow.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -39,7 +38,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
     app.MapOpenApi();
     app.UseSwagger();

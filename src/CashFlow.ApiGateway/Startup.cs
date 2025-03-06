@@ -1,7 +1,5 @@
 ﻿using CashFlow.Infraestructure.Handlers;
 using CashFlow.Shared;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Polly;
@@ -36,7 +34,7 @@ public static class Startup
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "CashFlow API Gateway",
                 Version = "v1",
