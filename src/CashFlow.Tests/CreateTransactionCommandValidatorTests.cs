@@ -21,7 +21,7 @@ namespace CashFlow.Tests
             var command = new CreateTransactionCommand
             {
                 Date = DateTime.Now,
-                Type = (int)TransactionType.Income,
+                Type = (int)TransactionType.Credit,
                 Amount = 0,
                 Description = "Teste"
             };
@@ -57,7 +57,7 @@ namespace CashFlow.Tests
             var command = new CreateTransactionCommand
             {
                 Date = DateTime.Now,
-                Type = (int)TransactionType.Expense,
+                Type = (int)TransactionType.Debit,
                 Amount = 50,
                 Description = ""
             };
@@ -75,7 +75,7 @@ namespace CashFlow.Tests
             var command = new CreateTransactionCommand
             {
                 Date = DateTime.Now,
-                Type = (int) TransactionType.Expense,
+                Type = (int) TransactionType.Debit,
                 Amount = 100,
                 Description = "Transação válida"
             };

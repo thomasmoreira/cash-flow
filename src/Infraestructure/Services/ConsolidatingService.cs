@@ -28,7 +28,7 @@ public class ConsolidatingService : IConsolidationService
         {
             _logger.LogInformation("Transaction {TransactionId} found", TransactionId);
 
-            var amountToConsolidate = transaction.Type == Domain.Enums.TransactionType.Expense ? transaction.Amount * -1 : transaction.Amount;
+            var amountToConsolidate = transaction.Type == Domain.Enums.TransactionType.Debit ? transaction.Amount * -1 : transaction.Amount;
 
             var dailyConsolidationData = await _consolidatingRepository.GetDailyConsolidatingAsync(transaction.Date);
 

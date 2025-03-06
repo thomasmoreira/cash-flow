@@ -23,7 +23,7 @@ public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery,
         {
             Id = t.Id,
             Date = t.Date,
-            Type = t.Type,
+            Type = t.Type.GetDisplayName(),
             Amount = t.Amount,
             Description = t.Description
         });

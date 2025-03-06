@@ -38,7 +38,7 @@ namespace CashFlow.Tests
             var command = new CreateTransactionCommand
             {
                 Date = now,
-                Type = (int)TransactionType.Income,
+                Type = (int)TransactionType.Credit,
                 Amount = 100.0m,
                 Description = "Teste de transação"
             };
