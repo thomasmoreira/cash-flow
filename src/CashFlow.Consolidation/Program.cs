@@ -68,7 +68,7 @@ app.MapGet("/daily-consolidation", async (IMediator mediator) =>
  .Produces<BalanceConsolidationDto?>(200)
  .RequireAuthorization();
 
-app.MapGet("/balance-consolidation-report", async (IMediator mediator) =>
+app.MapGet("/daily-consolidation-report", async (IMediator mediator) =>
 {
     var query = new GetConsolidatedBalanceReportQuery();
     var result = await mediator.Send(query);

@@ -131,11 +131,11 @@ app.MapGet("/gateway/consolidation/daily-consolidation", async (HttpContext cont
 .WithOpenApi()
 .RequireAuthorization();
 
-app.MapGet("/gateway/consolidation/balance-consolidation-report", async (HttpContext context, IHttpClientFactory clientFactory) =>
+app.MapGet("/gateway/consolidation/daily-consolidation-report", async (HttpContext context, IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient("Consolidating");
 
-    var response = await client.GetAsync($"/balance-consolidation-report");
+    var response = await client.GetAsync($"/daily-consolidation-report");
 
     if (response.Content.Headers.ContentType != null)
     {
