@@ -10,7 +10,7 @@ services:
       - postgres
       - rabbitmq
     networks:
-      - cashflow-network      
+      - cashflow-network
 
   consolidation:
     build:

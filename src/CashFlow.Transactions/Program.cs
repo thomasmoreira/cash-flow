@@ -2,13 +2,13 @@ using CashFlow.Application;
 using CashFlow.Infraestructure;
 using CashFlow.Infraestructure.Common;
 using CashFlow.Infraestructure.Persistence;
+using CashFlow.Infraestructure.Persistence.Utils;
 using CashFlow.Shared;
 using CashFlow.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
@@ -48,6 +48,7 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await DatabaseChecker.WaitForDatabaseAsync(db);
     db.Database.Migrate();
 }
 
