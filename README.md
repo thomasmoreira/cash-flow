@@ -40,9 +40,9 @@ Esta seção descreve os passos para rodar o projeto, tanto localmente quanto vi
 2. **Configuração:**
     - Configure as variáveis de ambiente ou os arquivos de configuração (`appsettings.json`) conforme necessário para apontar para os serviços locais:
         - Exemplo:
-            - `ServiceUrls__Transactions = http://localhost:5001`
-            - `ServiceUrls__Consolidation = http://localhost:5002`
-            - `Seq:Url = http://localhost:5341`
+            - `AppSettings:ServiceUrls:Transactions = http://localhost:5001`
+            - `AppSettings:ServiceUrls:Consolidation = http://localhost:5002`
+            - `AppSettings:Seq:Url = http://localhost:5341`
     - Certifique-se de que o ambiente esteja definido como `Development`.
 
 3. **Executando a Solução:**
@@ -59,9 +59,10 @@ Esta seção descreve os passos para rodar o projeto, tanto localmente quanto vi
 2. **Configuração:**
     - Verifique o arquivo `docker-compose.yml` na raiz do projeto. Nele, as portas dos serviços estão mapeadas da seguinte forma:
         - **API Gateway:** acessível em `http://localhost:5000`
-        - **Transactions Service:** mapeado em `http://localhost:5001`  
-          - (Internamente, o container escuta na porta 8080)
-        - **Consolidation Service:** mapeado em `http://localhost:5002`
+        - **Transactions Service:** 
+          - (acessado apenas internamente, na porta 8080 do container)
+        - **Consolidation Service:**
+          - (acessado apenas internamente, na porta 8080 do container)
         - **PostgreSQL:** na porta `5432`
         - **RabbitMQ:** nas portas `5672` (AMQP) e `15672` (interface de gerenciamento)
         - **Seq:** acessível em `http://localhost:5341`
@@ -95,7 +96,7 @@ Esta seção descreve os passos para rodar o projeto, tanto localmente quanto vi
   O API Gateway aplica as migrations automaticamente ao iniciar a aplicação.  
   Caso necessário, você pode executar manualmente:
   ```bash
-  dotnet ef database update --project src/CashFlow.Infraestructure --startup-project src/CashFlow.ApiGateway
+  dotnet ef database update --project src/Infraestructure --startup-project src/CashFlow.Transactions
         
 ## Tecnologias Utilizadas
 
