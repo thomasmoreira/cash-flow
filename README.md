@@ -135,8 +135,8 @@ Refinar as configurações de retry, circuit breaker e timeout utilizando Polly,
 * Integração com um Provedor de Identidade Centralizado:
 Considerar a implementação de uma solução de Identity Server ou o uso de provedores como Auth0/Azure AD para gerenciamento centralizado de usuários e emissão de tokens JWT.
 
-* Monitoramento e Alertas:
-Integrar com ferramentas como Prometheus e Grafana para monitorar métricas de desempenho, uso e saúde dos serviços, além de configurar alertas para anomalias.
+* Monitoramento, Observabilidade e Alertas:
+Integrar com ferramentas como Prometheus, APM e Grafana para monitorar métricas de desempenho, uso e saúde dos serviços, além de configurar alertas para anomalias.
 
 * Escalabilidade Dinâmica:
 Explorar a orquestração via Kubernetes ou outras soluções de autoescalonamento, possibilitando a escalabilidade horizontal dos serviços conforme a demanda.
@@ -146,6 +146,3 @@ Implementar um cache distribuído (por exemplo, Redis) para melhorar o desempenh
 
 * Automação de Testes e CI/CD:
 Expandir a cobertura de testes (unitários e de integração) e configurar pipelines de CI/CD para build, testes e deploy automatizados.
-
-* Persistência Segura para Data Protection:
-Configurar armazenamento persistente para chaves de proteção de dados (Data Protection), garantindo a continuidade das operações em ambientes de container.
