@@ -146,3 +146,7 @@ Implementar um cache distribuído (por exemplo, Redis) para melhorar o desempenh
 
 * Automação de Testes e CI/CD:
 Expandir a cobertura de testes (unitários e de integração) e configurar pipelines de CI/CD para build, testes e deploy automatizados.
+
+* Implementação do Padrão Domain Events
+  Atualmente, utilizamos o MassTransit para consumir mensagens de eventos, mas não adotamos o padrão Domain Events para desacoplar as regras de negócio da comunicação de eventos.  
+  A implementação deste padrão pode melhorar a organização do código, permitindo que as entidades do domínio publiquem eventos internos que sejam tratados por handlers específicos, facilitando a escalabilidade, manutenção e testes da lógica de negócio.
