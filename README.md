@@ -24,6 +24,12 @@ A solução é composta por três componentes principais:
   - Encaminha as requisições para os serviços internos.
   - Unifica a documentação da API via Swagger/OpenAPI.
 
+ ## Credenciais para Login
+
+Para acessar a API, utilize as seguintes credenciais:
+- **Usuário:** `cashflow`
+- **Senha:** `123P@$$word!`
+
 ## Como Executar o Projeto
 
 Esta seção descreve os passos para rodar o projeto, tanto localmente quanto via Docker Compose.
